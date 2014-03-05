@@ -28,7 +28,7 @@ public class PieMenu extends View{
 	
 	private final static int BIG_CIRCLE_RADIUS = 400;
 	private final static int SMALL_CIRCLE_RADIUS = 400;
-	
+	// update
 	private Paint smallCircleCore;
 	private Paint lineCore;
 	private Paint bigArc;

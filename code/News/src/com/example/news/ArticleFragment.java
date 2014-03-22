@@ -48,7 +48,7 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		ArticleLab.get(getActivity()).saveArticles();
+		//ArticleLab.get(getActivity()).saveArticles();
 	}
 
 }

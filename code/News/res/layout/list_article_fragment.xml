@@ -3,24 +3,49 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white" >
+    android:background="@color/black">
     
     <ImageView 
         android:id="@+id/logo_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        />
+        android:layout_height="80dp"
+    />
+    
+    <TextView
+	 android:id="@+id/scrollingTicker"
+	 android:layout_width="fill_parent"
+	 android:layout_height="wrap_content"
+	 android:singleLine="true"
+	 android:scrollHorizontally="true"
+	 android:ellipsize="marquee"
+	 android:marqueeRepeatLimit="marquee_forever"
+	 
+	 android:paddingTop="2dp"
+     android:paddingBottom="2dp"
+     android:paddingRight="10dp"
+     android:paddingLeft="10dp"
+     
+     android:textColor="@color/white"
+	 android:textStyle="normal"
+     android:textSize="14sp"
+	/>
     
     <TextView 
-        android:id="@+id/main_titleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/main_title"
-        android:textColor="@color/white"
-		android:textStyle="bold"
-        android:background="@color/red_1"
-        />
+   	 android:id="@+id/main_titleTextView"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:text="@string/main_title"
+	 
+     android:background="@color/red_1"
+     
+     android:paddingTop="2dp"
+     android:paddingBottom="2dp"
+     android:paddingRight="10dp"
+     
+     android:textColor="@color/white"
+	 android:textStyle="bold"
+     android:textSize="16sp"
+    />
     
     <ListView  android:id="@android:id/list"
         	

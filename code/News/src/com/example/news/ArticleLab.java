@@ -4,48 +4,51 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import android.content.Context;
-import android.util.Log;
 
 public class ArticleLab {
 
 	private static ArticleLab sLab; 
 	private Context mAppContext;
 	private ArrayList<Article> mArticles;
-	private static final String FILENAME = "items.json";
-	private NewsJSONSerializer mSerializer;
-	private static final String TAG = "ArticleLab";
-	
-	private Parser p;
 
 	private ArticleLab(Context appContext){
-//		mAppContext = appContext;
-//		mSerializer = new NewsJSONSerializer(mAppContext, FILENAME);
+		mAppContext = appContext;
+		mArticles = new ArrayList<Article>();
 		
-//		try {
-//			mArticles = mSerializer.loadArticles();
-//			} catch (Exception e) {
-			mArticles = new ArrayList<Article>();
-//			Log.e(TAG, "Error loading articles: ", e);
-//			}
+		HeadArticle ha = new HeadArticle();
+		ha.setTitle("מבוקש פעיל חמאס נהרג בפעילות צה''ל בג'נין");
+		ha.setSummary("היה מעורב בפיגועי ירי ובהנחת מטענים נגד צה''ל • יחד איתו נהרגו 3 פלשתינים נוספים • שני לוחמים נפצעו קל...");
+		ha.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/770x319/public/images/articles/2014/03/22/13954726443363_b.jpg");
 		
-		Article c = new HeadArticle();
-		c.setTitle("כתבה כתבה כתבה ניסיון #" + 0);
-		c.setSummary("בלה בלה בלה סוקול ספארטק מנציסטר יונייטד בלה בלה בלה ניסיון... #" + 0);
-		c.setContent("blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa #"+0 );
-		c.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/241x148/public/images/articles/2014/03/06/1394141622462_b.jpg");
-		mArticles.add(c);
-		for (int i = 1; i < 100; i++) {
-			if (i % 10 == 0) {
-				
-			} else {
-			c = new SubArticle();
-			c.setTitle("כתבה כתבה כתבה ניסיון #" + i);
-			c.setSummary("בלה בלה בלה סוקול ספארטק מנציסטר יונייטד בלה בלה בלה ניסיון... #" + i);
-			c.setContent("blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa #"+i );
-			c.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/241x148/public/images/articles/2014/03/06/1394141622462_b.jpg");
-			mArticles.add(c);
-			}}
-
+		mArticles.add(ha);
+		
+		SubArticle sa = new SubArticle();
+		sa.setTitle("השופטת מהקרמלין");
+		sa.setSummary("כך הפכה השופטת בדימוס עדינה פורת, 87, למטהר האוויר של רן ארז ואנשיו (ב')...");
+		sa.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/241x148/public/images/articles/2014/03/21/13953529854051_b.jpg");
+		
+		mArticles.add(sa);
+		
+		sa = new SubArticle();
+		sa.setTitle("הולכת נגד הרוח");
+		sa.setSummary("בין תפקידי האלמנה השחורה לחייזרית טורפת גברים, ג'והנסון מנצלת את פאריס לרגעים רומנטיים עם ארוסה הצרפתי...");
+		sa.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/241x148/public/images/articles/2014/03/20/13952680672056_b.jpg");
+		
+		mArticles.add(sa);
+		
+		sa = new SubArticle();
+		sa.setTitle("מרגול ופנינה - החברות הכי טובות");
+		sa.setSummary("צפו: קוסם מפינלנד בדק איך מגיבים כלבים כשהחטיף נעלם מתחת לאף...");
+		sa.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/241x148/public/images/articles/2014/03/22/1395479841652_b.jpg");
+		
+		mArticles.add(sa);
+		
+		sa = new SubArticle();
+		sa.setTitle("ולתפארת מדינת ישראל");
+		sa.setSummary("כששחר פאר התבשרה שנבחרה להדליק משואה בערב יום העצמאות, היא רעדה מהתרגשות ופרצה בבכי...");
+		sa.setImgLink("http://www.israelhayom.co.il/sites/default/files/styles/566x349/public/images/articles/2014/03/20/13952677007395_b.jpg");
+		
+		mArticles.add(sa);
 	}
 
 	public static ArticleLab get(Context c){
@@ -66,16 +69,5 @@ public class ArticleLab {
 		}
 		return null;
 	}
-	
-	public boolean saveArticles() {
-		try {
-		mSerializer.saveArticles(mArticles);
-		Log.d(TAG, "articles saved to file");
-		return true;
-		} catch (Exception e) {
-		Log.e(TAG, "Error saving articles: ", e);
-		return false;
-		}
-		}
 
 }

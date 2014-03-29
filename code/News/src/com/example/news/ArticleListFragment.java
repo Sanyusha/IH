@@ -18,7 +18,8 @@ public class ArticleListFragment extends ListFragment {
 	private static final String TAG = "ArticleListFragment";
 
 	private ArrayList<Article> mArticles;
-
+	View view;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -34,11 +35,25 @@ public class ArticleListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-	    View view = inflater.inflate(R.layout.list_article_fragment, container, false);
+	    view = inflater.inflate(R.layout.list_article_fragment, container, false);
 	    
-	    ImageView logoImage = (ImageView)view.findViewById(R.id.logo_image);
+	    ImageView logoImage = (ImageView) view.findViewById(R.id.logo_image);
 	    logoImage.setImageResource(R.drawable.black_logo);
+	    
+	    setTicker();
+	    
 	    return view;
+	}
+	
+	private void setTicker() {
+		String scrollingText;
+		scrollingText ="  •  " + "הודו: מלזיה לא מצאה כל סימן למטוס שנעלם (רויטרס)" + "               " +
+				"  •  " + "קוריאה הצפונית שיגרה במהלך הלילה 30 טילים לעבר הים במהלך תרגיל (סוכנויות הידיעות)";
+		
+		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
+		tv.setText(scrollingText);
+		
+		tv.setSelected(true);
 	}
 	
 	@Override

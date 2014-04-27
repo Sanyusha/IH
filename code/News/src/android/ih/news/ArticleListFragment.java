@@ -1,8 +1,12 @@
-package com.example.news;
+package android.ih.news;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 import android.content.Intent;
+import android.ih.news.api.IHAPIWrapper;
+import android.ih.news.model.Article;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -17,7 +21,7 @@ import android.widget.TextView;
 public class ArticleListFragment extends ListFragment {
 	private static final String TAG = "ArticleListFragment";
 
-	private ArrayList<Article> mArticles;
+	private List<Article> mArticles;
 	View view;
 	
 	@Override
@@ -25,7 +29,9 @@ public class ArticleListFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.articles_title);
 		
-		mArticles = ArticleLab.get(getActivity()).getArticles();
+		
+		//mArticles = ArticleLab.get(getActivity()).getArticles();
+		mArticles = IHAPIWrapper.getInstance("Hello world", true).getMainPageArticles(10);
 		
 		ArticleAdapter adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
@@ -73,8 +79,8 @@ public class ArticleListFragment extends ListFragment {
 //	        LIST_ITEM, HEADER_ITEM
 //	    }
 		
-		public ArticleAdapter(ArrayList<Article> articles){
-			super(getActivity(), 0 , articles);
+		public ArticleAdapter(List<android.ih.news.model.Article> mArticles){
+			super(getActivity(), 0 , mArticles);
 		}
 		
 		@Override
@@ -128,11 +134,11 @@ public class ArticleListFragment extends ListFragment {
 	 
 	    }
 	 
-	    @Override
+	    /*@Override
 	    public int getItemViewType(int position) {
 	        // Use getViewType from the Item interface
 	        return mArticles.get(position).getViewType();
-	    }
+	    }*/
 
 	}
 }

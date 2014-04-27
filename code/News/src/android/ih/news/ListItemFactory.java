@@ -1,4 +1,4 @@
-package com.example.news;
+package android.ih.news;
 
 public class ListItemFactory {
 	

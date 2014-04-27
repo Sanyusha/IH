@@ -1,7 +1,9 @@
-package com.example.news;
+package android.ih.news;
 
 import java.util.UUID;
 
+import android.ih.news.api.IHAPIWrapper;
+import android.ih.news.model.Article;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +13,7 @@ import android.widget.TextView;
 
 public class ArticleFragment extends Fragment {
 
-	public static final String EXTRA_ARTICLE_ID = "com.example.news.article_id";
+	public static final String EXTRA_ARTICLE_ID = "andorid.ih.news.article_id";
 	private Article mArticle;
 	private TextView mTitleTextView;
 	private TextView mContentTextView;
@@ -28,7 +30,7 @@ public class ArticleFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		UUID articleId = (UUID)getArguments().getSerializable(EXTRA_ARTICLE_ID);
-		mArticle = ArticleLab.get(getActivity()).getArticle(articleId);
+		mArticle = IHAPIWrapper.getInstance("fdsfadsfas", true).getFullArticle(articleId);
 
 	}
 
@@ -40,7 +42,7 @@ public class ArticleFragment extends Fragment {
 		mTitleTextView.setText(mArticle.getTitle());
 
 		mContentTextView = (TextView)v.findViewById(R.id.article_contentTextView);
-		mContentTextView.setText(mArticle.getContent());
+		mContentTextView.setText(mArticle.getFullText());
 
 		return v;
 	}

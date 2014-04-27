@@ -1,4 +1,4 @@
-package com.example.news;
+/*package android.ih.news.deprecated;
 
 import java.util.UUID;
 
@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
+import android.ih.news.RowType;
+import android.ih.news.model.Item;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -102,3 +104,4 @@ abstract class Article implements Item{
 		return json;
 	}
 }
+*/

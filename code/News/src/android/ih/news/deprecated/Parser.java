@@ -1,6 +1,10 @@
-package com.example.news;
+/*package android.ih.news.deprecated;
 
 import java.util.Vector;
+
+import android.ih.news.deprecated.Category;
+import android.ih.news.model.HeadArticle;
+import android.ih.news.model.SubArticle;
 
 public class Parser {
 	
@@ -37,3 +41,4 @@ public class Parser {
 		return categories;
 	}
 }
+*/

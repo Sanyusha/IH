@@ -1,8 +1,12 @@
-package com.example.news;
+package android.ih.news;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+
+import android.ih.news.api.IHAPIWrapper;
+import android.ih.news.model.Article;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,7 +16,7 @@ import android.support.v4.view.ViewPager;
 
 public class ArticlePagerActivity extends FragmentActivity {
 	private ViewPager mViewPager;
-	private ArrayList<Article> mArticles;
+	private List<Article> mArticles;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -21,7 +25,7 @@ public class ArticlePagerActivity extends FragmentActivity {
 		mViewPager.setId(R.id.viewPager);
 		setContentView(mViewPager);
 
-		mArticles = ArticleLab.get(this).getArticles();
+		mArticles = IHAPIWrapper.getInstance("fdsfds", true).getMainPageArticles(10);
 		FragmentManager fm = getSupportFragmentManager();
 		mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
 

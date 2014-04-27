@@ -1,4 +1,4 @@
-package com.example.news;
+package android.ih.news;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

@@ -1,8 +1,12 @@
-package com.example.news;
+/*package android.ih.news.deprecated;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.news.R;
+
+import android.ih.news.RowType;
+import android.ih.news.model.Item;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,3 +46,4 @@ public class Category implements Item {
 	}
 }
 
+*/

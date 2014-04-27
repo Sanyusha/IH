@@ -1,9 +1,11 @@
-package com.example.news;
+/*package android.ih.news.deprecated;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 import android.content.Context;
+import android.ih.news.model.HeadArticle;
+import android.ih.news.model.SubArticle;
 
 public class ArticleLab {
 
@@ -71,3 +73,4 @@ public class ArticleLab {
 	}
 
 }
+*/

@@ -1,4 +1,4 @@
-package com.example.news;
+/*package android.ih.news.deprecated;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.ih.news.deprecated.Article;
 
 public class NewsJSONSerializer {
 	private Context mContext;
@@ -80,3 +81,4 @@ public class NewsJSONSerializer {
 		}
 	}
 }
+*/

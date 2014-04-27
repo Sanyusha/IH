@@ -16,19 +16,19 @@ import android.widget.ImageView;
 import com.example.piemenu.PieMenu;
 
 public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
-
     PieMenu view;
     Bitmap bmp1;
+    int i;
     
-    public DownloadImagesTask(PieMenu view, Bitmap bmp) {
+    public DownloadImagesTask(PieMenu view, int i) {
 		this.view = view;
-		this.bmp1 = bmp;
+		this.i = i;
 	}
     
     @Override
     protected Bitmap doInBackground(String... params) {
     	Log.d("Sanya", params[0]);
-        return download_Image(params[0]);
+    	return download_Image(params[0]);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class DownloadImagesTask extends AsyncTask<String, Void, Bitmap> {
     	}
     	if (result != null) {
     		Log.d("Andrey", "result NOT nullllllllllllll");
-    		view.myBmp = result;
+    		view.circleBmp[i] = result;
     	}
         //imageView.setImageBitmap(result);
         view.SOKOL = 1;

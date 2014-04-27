@@ -2,6 +2,7 @@ package com.example.piemenu;
 
 import java.util.ArrayList;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,17 +10,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
-
 
 import com.example.images.CircleBitmap;
 import com.example.images.DownloadImagesTask;
@@ -40,6 +38,7 @@ public class PieMenu extends View{
 	private Paint subCirclePaint;
 	
 	public Bitmap myBmp;
+	public Bitmap[] circleBmp = new Bitmap[3];
 	
 	private int initial, midInitial;
 	private int finalangle;
@@ -77,6 +76,9 @@ public class PieMenu extends View{
 	
 	public int SOKOL = 0;
 	
+	private BasicTree<AnnotatedImage> menu;
+	private ActionListener menuSelectedListener;
+	
 	public PieMenu(Context context) {
 		super(context);
 		this.context = context;
@@ -84,7 +86,16 @@ public class PieMenu extends View{
 
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	/*
+	public PieMenu(Context context, ActionListener menuSelectedListener) {
+		super(context);
+		
+		this.menu = new BasicTree<AnnotatedImage>(null); // root data is null, it's children are the categories
+		this.menuSelectedListener = menuSelectedListener;
+	}
+	*/
+	
 	public PieMenu(Context context, AttributeSet attri)
 	{
 		super(context, attri);
@@ -117,7 +128,7 @@ public class PieMenu extends View{
 		//bigCircleCore.setStrokeWidth(5);            
 
 		smallCircleCore.setStyle(Paint.Style.FILL);
-		smallCircleCore.setColor(Color.BLUE);              //draws the two small circles
+		smallCircleCore.setColor(Color.WHITE);              //draws the two small circles
 
 		bigArc.setColor(0xFF424242);
 		bigArc.setStyle(Paint.Style.FILL);
@@ -131,21 +142,22 @@ public class PieMenu extends View{
 		pencil.setStyle(Paint.Style.STROKE);
 		
 		subCirclePaint.setStrokeWidth(10f);                          //width of the lines between sectors
-		subCirclePaint.setColor(Color.MAGENTA);                        //draws the lines between sectors
+		subCirclePaint.setColor(Color.WHITE);                        //draws the lines between sectors
 		//subCirclePaint.setStyle(Paint.Style.STROKE);
 		subCirclePaint.setStyle(Paint.Style.FILL);
 		
 		//
 		middleCircleBody = new Paint(bigArc);
-		middleCircleBody.setColor(Color.GRAY);
+		middleCircleBody.setColor(getResources().getColor(R.color.gray));
 		//
+		
 		arcTouchedBack = new Paint(Paint.ANTI_ALIAS_FLAG);
-		arcTouchedBack.setColor(0xFF81DAF5);
+		arcTouchedBack.setColor(Color.WHITE);
 		arcTouchedBack.setStyle(Paint.Style.FILL);      
 
 		circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		circlePaint.setStyle(Paint.Style.STROKE);
-		circlePaint.setStrokeWidth(50);                  //the width of the outermost circle
+		circlePaint.setStrokeWidth(20);                  //the width of the outermost circle
 
 
 		float[] direection = new float[]{1,1,1};
@@ -157,13 +169,21 @@ public class PieMenu extends View{
 		forBig = new EmbossMaskFilter(direection, 1f, 4, 2.5f);
 		
 		bitmap.clear();
-		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.tasks));
-		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.contacts));
-		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.file_manager));
-		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.home));      
-		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.reminder));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.thinker));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.globe));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.soccer));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.graph));      
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.horos));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.weather));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.culture));
+		bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.airplane));
+		//bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.love));      
+		//bitmap.add(BitmapFactory.decodeResource(getResources(), R.drawable.judaism));
 		
-		myBmp = BitmapFactory.decodeResource(getResources(), R.drawable.reminder);
+		//myBmp = BitmapFactory.decodeResource(getResources(), R.drawable.love);
+		circleBmp[0] = null;
+		circleBmp[1] = null;
+		circleBmp[2] = null;
 		
 		middleCircleBody.setMaskFilter(forBig);
 		bigArc.setMaskFilter(forBig);
@@ -223,6 +243,7 @@ public class PieMenu extends View{
 		middleOval.set(px-middleCircleRadius, py-middleCircleRadius, px+middleCircleRadius, py+middleCircleRadius);
 		Log.d("sokol", (px-middleCircleRadius) + ":::" + (py-middleCircleRadius) + ":::" + (px+middleCircleRadius) + ":::" + (py+middleCircleRadius));
 
+		/*
 		while(init<fina)
 		{
 			circlePaint.setColor(colors[i]);
@@ -235,99 +256,134 @@ public class PieMenu extends View{
 			init = init + 10;
 
 		}
+		*/
 		
-
+		circlePaint.setColor(Color.WHITE);
+		canvas.drawArc(finalOVal,init,360,false, circlePaint);
+		
 		midInitial = 180;
 
 		i=0;
 
 		// Creating the arcs
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < 8; j++) {
 			if(arcTouched[j]) {
 				for (int k = 0; k < 3; k++) {
 					double[] subCircleCenter = getSubCircleCenter(j, 3, k);
-					canvas.drawCircle((int) subCircleCenter[0], (int) subCircleCenter[1], (int) subCircleCenter[2], subCirclePaint);
 					
-					String url1, url2, url3;
-					url1 = "http://cdn.theatlantic.com/static/infocus/2012yip120612/s_y01_00000001.jpg";
-					url2 = "http://www.israelhayom.co.il/sites/default/files/styles/125x125/public/images/articles/2014/02/28/13935419672126_b.jpg";
-					url3 = "http://www.israelhayom.co.il/sites/default/files/styles/566x349/public/images/articles/2014/02/28/13935420094025_b.jpg";
+					String[] strUrl = new String[3];
+					strUrl[0] = "http://cdn.theatlantic.com/static/infocus/2012yip120612/s_y01_00000001.jpg";
+					strUrl[1] = "http://www.israelhayom.co.il/sites/default/files/styles/125x125/public/images/articles/2014/02/28/13935419672126_b.jpg";
+					strUrl[2] = "http://www.israelhayom.co.il/sites/default/files/styles/566x349/public/images/articles/2014/02/28/13935420094025_b.jpg";
 					
-					ImageView imgView = new ImageView(getContext());
+					//ImageView imgView = new ImageView(getContext());
 					
-					imgView.setTag(url1);
+					//imgView.setTag(url1);
 					Bitmap bmp1, bmp2, bmp3;
-					new DownloadImagesTask(this, myBmp).execute(url1);
 					
-					String sLog;
-					sLog = "Sokol";
-					if (imgView == null) {
-						sLog = "barca";
-					} else {
-						sLog = imgView.toString();
+					
+					if (circleBmp[k] == null) {
+						new DownloadImagesTask(this, k).execute(strUrl[k]);
 					}
 					
-					Log.d("fd", sLog);
+					
+//					String sLog;
+//					sLog = "Sokol";
+//					if (imgView == null) {
+//						sLog = "barca";
+//					} else {
+//						sLog = imgView.toString();
+//					}
+//					
+//					Log.d("fd", sLog);
 					//bmp1 = ((BitmapDrawable)imgView.getDrawable()).getBitmap();
 					
 					
 					int targetWidth = (int) subCircleCenter[2];
 				    int targetHeight = (int) subCircleCenter[2];
 				    
-				    
-				    myBmp = CircleBitmap.getCroppedBitmap(myBmp);
+				    /*
+				    circleBmp[k] = CircleBitmap.getCroppedBitmap(circleBmp[k]);
 				    int R = (int) subCircleCenter[2] +40;
-				    float min = Math.min(myBmp.getHeight(), myBmp.getWidth());
-
+				    float min = Math.min(circleBmp[k].getHeight(), circleBmp[k].getWidth());
+				    
+				    
 				    canvas.drawBitmap(
-				    		myBmp,
-					        new Rect(0, 0, myBmp.getWidth(), myBmp.getHeight()),
+				    		circleBmp[k],
+					        new Rect(0, 0, circleBmp[k].getWidth(), circleBmp[k].getHeight()),
 					        new Rect((int)subCircleCenter[0]-R, (int)subCircleCenter[1]-R, 
-					        		myBmp.getWidth() / ((int)min / R) + (int)subCircleCenter[0]-R, 
-					        		myBmp.getHeight() / ((int)min / R) + (int)subCircleCenter[1]-R),
+					        		circleBmp[k].getWidth() / ((int)min / R) + (int)subCircleCenter[0]-R, 
+					        		circleBmp[k].getHeight() / ((int)min / R) + (int)subCircleCenter[1]-R),
 					        null);
+					*/       
 				    /*
 					canvas.drawBitmap(
 			    	CircleBitmap.getCroppedBitmap(myBmp),
 			    	 null, (putBitmapTo(200, 36, 450, 100, 100)), null);
 			       */
+				    
+				    
+				    if (circleBmp[k] == null) {
+				    	Log.d("circleBmp[k]", "Null");
+				    	canvas.drawCircle((int) subCircleCenter[0], (int) subCircleCenter[1], (int) subCircleCenter[2], subCirclePaint);
+				    } else {
+				    	Log.d("circleBmp[k]", "Not null");
+				    	circleBmp[k] = CircleBitmap.getCroppedBitmap(circleBmp[k]);
+					    int R = (int) subCircleCenter[2] + 20;
+					    float min = Math.min(circleBmp[k].getHeight(), circleBmp[k].getWidth());
+					    
+					    
+					    canvas.drawBitmap(
+					    		circleBmp[k],
+						        new Rect(0, 0, circleBmp[k].getWidth(), circleBmp[k].getHeight()),
+						        new Rect((int)subCircleCenter[0]-R, (int)subCircleCenter[1]-R, 
+						        		circleBmp[k].getWidth() / ((int)min / R) + (int)subCircleCenter[0]-R, 
+						        		circleBmp[k].getHeight() / ((int)min / R) + (int)subCircleCenter[1]-R),
+						        null);
+				    }
 				}
 				
-				canvas.drawArc(middleOval, midInitial, 36, true, arcTouchedBack);
-				canvas.drawArc(middleOval, midInitial, 36, true, pencil);
+				canvas.drawArc(middleOval, midInitial, 45, true, arcTouchedBack);
+				canvas.drawArc(middleOval, midInitial, 45, true, pencil);
 			}
 			else {
-				canvas.drawArc(middleOval, midInitial, 36, true, middleCircleBody);
-				canvas.drawArc(middleOval, midInitial, 36, true, pencil);
+				canvas.drawArc(middleOval, midInitial, 45, true, middleCircleBody);
+				canvas.drawArc(middleOval, midInitial, 45, true, pencil);
 			}
 			
-			canvas.drawBitmap(bitmap.get(0), null, (putBitmapTo(midInitial, 36, 450, px, py)), null); // ME
+			canvas.drawBitmap(bitmap.get(j), null, (putBitmapTo(midInitial, 45, 450, px, py)), null); // ME
+			//canvas.drawBitmap(bitmap.get(0), null, (putBitmapTo(midInitial, 36, 450, px, py)), null); // ME
 			
 			Log.d("SOKOL", ""+SOKOL);
 			
 			SOKOL = 0;
 			
-			midInitial+=36;
+			midInitial+=45;
 		}
 
-
+		
+		/*
 		canvas.drawCircle(px, py-10, 40, pencil);
 		canvas.drawCircle(px, py-10, 39, smallCircleCore);
-
-		canvas.drawCircle(px, py-10, 35, bigArc);
-		canvas.drawCircle(px, py-10, 20, smallCircleCore);
-
+		*/
+		
+		
+		//canvas.drawCircle(px, py-10, 35, bigArc);
+		canvas.drawCircle(px, py, 10, smallCircleCore);
+		
+		/*
 		canvas.drawCircle(px, py-10, 15, bigArc);
 		canvas.drawLine(px-8, py-10, px+8, py-10, lineCore);
-
+		*/
+		
 		canvas.save();
 	}
 
 
 	private double[] getSubCircleCenter(int sectorNum , int numOfCircles, int circleIndex) {
 		int newRadius = middleCircleRadius + 100;
-		int angle = sectorNum * 36;
-		int deltaAngle = 36 / numOfCircles;
+		int angle = sectorNum * 45;
+		int deltaAngle = 45 / numOfCircles;
 		angle += ((circleIndex) * deltaAngle) + (deltaAngle/2);
 		
 		double rAngle = Math.toRadians(angle);
@@ -445,7 +501,7 @@ public class PieMenu extends View{
 				))
 				));
 
-		return new RectF(locx - 80, locy - 80, locx + 80, locy + 80); // ME   
+		return new RectF(locx - 70, locy - 70, locx + 70, locy + 70); // ME   
 
 	}
 

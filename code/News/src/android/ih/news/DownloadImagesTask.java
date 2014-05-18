@@ -10,8 +10,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class DownloadImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
 
+public class DownloadImagesTask extends AsyncTask<ImageView, Void, Bitmap> {
+	
+	//TODO: work with annotated image
+	//TODO: add cache
     ImageView imageView = null;
 
     @Override

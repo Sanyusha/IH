@@ -30,7 +30,7 @@ public class ArticleFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		UUID articleId = (UUID)getArguments().getSerializable(EXTRA_ARTICLE_ID);
-		mArticle = IHAPIWrapper.getInstance("fdsfadsfas", true).getFullArticle(articleId);
+		//mArticle = IHAPIWrapper.getInstance("fdsfadsfas", true).getFullArticle(articleId);
 
 	}
 
@@ -42,7 +42,7 @@ public class ArticleFragment extends Fragment {
 		mTitleTextView.setText(mArticle.getTitle());
 
 		mContentTextView = (TextView)v.findViewById(R.id.article_contentTextView);
-		mContentTextView.setText(mArticle.getFullText());
+		mContentTextView.setText(mArticle.getSummery());
 
 		return v;
 	}

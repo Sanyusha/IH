@@ -1,5 +1,6 @@
 package android.ih.news.model;
 
+import java.util.List;
 import java.util.UUID;
 
 import android.ih.news.DownloadImagesTask;
@@ -11,8 +12,8 @@ import android.widget.TextView;
 
 public class HeadArticle extends Article {
 	
-	public HeadArticle(UUID id, String title, String fullText, String imageURL) {
-		super(id, title, fullText, imageURL);
+	public HeadArticle(UUID id, String title, String fullText, List<AnnotatedImage> images) {
+		super(id, title, fullText, images);
 	}
 	
 	public View getView(LayoutInflater inflater, View convertView)
@@ -29,7 +30,8 @@ public class HeadArticle extends Article {
 			ImageView articleImageView;
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
 			
-			articleImageView.setTag(this.getImageURL());
+			// TODO: work with annotated image
+			articleImageView.setTag(this.getImages().get(0).getUrl());
 			new DownloadImagesTask().execute(articleImageView);
 			
 			//articleImageView.setImageResource(R.drawable.images_logo2_he);
@@ -38,9 +40,8 @@ public class HeadArticle extends Article {
 			titleTextView.setText(this.getTitle());
 			
 			TextView summaryTextView = (TextView)convertView.findViewById(R.id.article_list_item_summaryTextView);
-			summaryTextView.setText(this.getFullText());
-			
-						
+			summaryTextView.setText(this.getSummery());
+									
 			return convertView;
 	    }
 }

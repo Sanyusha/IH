@@ -1,9 +1,11 @@
 package android.ih.news.api;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
 import android.ih.news.model.Category;
 import android.ih.news.model.Comment;
@@ -17,7 +19,7 @@ import android.ih.news.model.SubArticle;
  */
 public class IHAPIWrapper {
 
-	private String baseUrl;
+	private String baseUrl;		// would be http://api.app.israelhayom.co.il/
 	private boolean addSleepTime; // TODO: for debug only, remove when done
 	
 	private static IHAPIWrapper _IHAPIWrapper = null;
@@ -47,15 +49,15 @@ public class IHAPIWrapper {
 	 */
 	public List<Category> getAllCategories() {
 		
-		// TODO: replace with a call to getBaseUrl + "/category"
+		// TODO: replace with a call to getBaseUrl + "/category?key=nas987nh34"
 		
 		sleepIfNeededToSimulateNetworkTime();
 		List<Category> categories = new ArrayList<Category>();
-		categories.add(new Category("Sports", 50, 1));
-		categories.add(new Category("Economics", 50, 2));
-		categories.add(new Category("Weather", 50, 3));
-		categories.add(new Category("Culture", 50, 4));
-		categories.add(new Category("Opinions", 50, 5));
+		categories.add(new Category("ביקורת טלויזיה", 519, "10005", Category.HEBREW_LANGUAGE));
+		categories.add(new Category("בריאות", 562, "19", Category.HEBREW_LANGUAGE));
+		categories.add(new Category("דעות", 11470, "10001", Category.HEBREW_LANGUAGE));
+		categories.add(new Category("הורוסקופ", 3429, "10009", Category.HEBREW_LANGUAGE));
+		categories.add(new Category("העולם", 3774, "15", Category.HEBREW_LANGUAGE));
 		return categories;
 	}
 	
@@ -67,15 +69,43 @@ public class IHAPIWrapper {
 	 */
 	public List<Article> getMainPageArticles(int num) {
 		
-		// TODO: replace with a call to getBaseUrl + "/popular?platform=andriod&limit=limit"
+		// TODO: replace with a call to getBaseUrl + "/popular?key=nas987nh34&limit=10"
+		
+		/* data looks like: 
+		 * 0:  {
+				_id: {
+				nid: 182519				// article id
+				oldId: null
+				}-
+				populars: 33			// don't know what is this
+				}-
+				1:  {
+				_id: {
+				nid: 182857
+				oldId: null
+				}-
+				populars: 29
+				}-
+				2:  {
+				_id: {
+				nid: 182697
+				oldId: null
+				}-
+				populars: 14
+				}
+		 */
 		
 		sleepIfNeededToSimulateNetworkTime();
 		List<Article> articles = new ArrayList<Article>();
 		
-		articles.add(new HeadArticle(UUID.randomUUID(), "Main title, " + 0, "Hello world", "http://www.israelhayom.co.il/sites/default/files/styles/770x319/public/images/articles/2014/03/22/13954726443363_b.jpg"));
+		AnnotatedImage ai = new AnnotatedImage("aaa", "http://www.israelhayom.co.il/sites/default/files/styles/770x319/public/images/articles/2014/03/22/13954726443363_b.jpg", null);
+		List<AnnotatedImage> lai = new ArrayList<AnnotatedImage>();
+		lai.add(ai);
+		
+		articles.add(new HeadArticle(UUID.randomUUID(), "Main title, " + 0, "Hello world", lai));
 		
 		for (int i = 1; i < num; i++) {
-			articles.add(new SubArticle(UUID.randomUUID(), "Main title, " + i, "Hello world", "http://www.israelhayom.co.il/sites/default/files/styles/770x319/public/images/articles/2014/03/22/13954726443363_b.jpg"));
+			articles.add(new SubArticle(UUID.randomUUID(), "Main title, " + i, "Hello world", lai));
 		}
 		return articles;
 	}
@@ -99,23 +129,6 @@ public class IHAPIWrapper {
 		}
 		return articles;
 	}
-
-	/**
-	 * Completes the article with additional fields.
-	 * @param articleId the partial article
-	 */
-	public Article getFullArticle(UUID articleId) {
-
-		// TODO: replace with a call to getBaseUrl + "/content/article?id=article.getId()"
-		
-		sleepIfNeededToSimulateNetworkTime();
-		
-		SubArticle sa = new SubArticle(articleId, "hgdfgdfgd", "bcvbcvbc", "http://www.israelhayom.co.il/sites/default/files/styles/770x319/public/images/articles/2014/03/22/13954726443363_b.jpg");
-		
-		sa.setComments(getArticleComments(articleId));
-		
-		return sa;
-	}
 	
 	/**
 	 * To save time, this function returns only the basic info, for the full article call getFullArticle  
@@ -125,9 +138,10 @@ public class IHAPIWrapper {
 	 * @param num number of articles to fetch
 	 * @return the requested number of articles of the given category
 	 */
-	private List<Comment> getArticleComments(UUID articleId) {
+	public List<Comment> getArticleComments(Article article) {
 		
-		// TODO: replace with a call to getBaseUrl + "/comment/article.getId()"
+		// TODO: replace with a call to getBaseUrl + "comment/article.getId()?key=nas987nh34"
+		// might not have any data: "Response does not contain any data."
 		
 		sleepIfNeededToSimulateNetworkTime();
 		List<Comment> comments = new ArrayList<Comment>();

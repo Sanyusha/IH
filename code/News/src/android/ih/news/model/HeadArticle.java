@@ -16,6 +16,10 @@ public class HeadArticle extends Article {
 		super(id, title, fullText, images);
 	}
 	
+	public HeadArticle() {
+		super(UUID.randomUUID(), null, null, null);
+	}
+	
 	public View getView(LayoutInflater inflater, View convertView)
 	 {
 	    	//if(convertView == null){
@@ -40,7 +44,7 @@ public class HeadArticle extends Article {
 			titleTextView.setText(this.getTitle());
 			
 			TextView summaryTextView = (TextView)convertView.findViewById(R.id.article_list_item_summaryTextView);
-			summaryTextView.setText(this.getSummery());
+			summaryTextView.setText(this.getSummary());
 									
 			return convertView;
 	    }

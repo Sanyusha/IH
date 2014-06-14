@@ -3,7 +3,6 @@ package android.ih.news.model;
 import java.util.List;
 import java.util.UUID;
 
-
 import android.ih.news.DownloadImagesTask;
 import android.ih.news.R;
 import android.view.LayoutInflater;
@@ -17,6 +16,10 @@ public class SubArticle extends Article {
 		super(articleId, title, fullText, images);
 	}
 	
+	public SubArticle() {
+		super(UUID.randomUUID(), null, null, null);
+	}
+
 	public View getView(LayoutInflater inflater, View convertView)
 	 {
 	    	//if(convertView == null){
@@ -31,8 +34,10 @@ public class SubArticle extends Article {
 			ImageView articleImageView;
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
 			
-			articleImageView.setTag(this.getImages().get(0).getUrl());
-			new DownloadImagesTask().execute(articleImageView);
+			if (this.getImages() != null && this.getImages().size() > 0) {
+				articleImageView.setTag(this.getImages().get(0).getUrl());
+				new DownloadImagesTask().execute(articleImageView);
+			}
 			
 			//articleImageView.setImageResource(R.drawable.images_logo2_he);
 			
@@ -40,7 +45,7 @@ public class SubArticle extends Article {
 			titleTextView.setText(this.getTitle());
 			
 			TextView summaryTextView = (TextView)convertView.findViewById(R.id.article_list_item_summaryTextView);
-			summaryTextView.setText(this.getSummery());
+			summaryTextView.setText(this.getSummary());
 				
 			return convertView;
 	    }

@@ -1,6 +1,11 @@
 package android.ih.news.model;
 
+import java.io.IOException;
+
 import android.graphics.Bitmap;
+import android.ih.news.api.JSONUtil;
+import android.ih.news.api.JSONUtil.JSONParsableObject;
+import android.util.JsonReader;
 
 /**
  * All the data needed to show an Image:
@@ -13,10 +18,14 @@ import android.graphics.Bitmap;
  *
  * @author PeterK
  */
-public class AnnotatedImage {
-	private String label;  // "caption" in the JSON fields
-	private Bitmap image;
-	private String url;	// will need to replace [DEFAULT] with one of this list http://api.app.israelhayom.co.il/images?key=nas987nh34
+public class AnnotatedImage implements JSONParsableObject{
+	private static final String DEFAULT_IMAGE_SIZE = "296x122";
+	private static final String DEFAULT_PLACEHOLDER = "[DEFAULT]";
+	private static final String HTTP_WWW_ISRAELHAYOM_CO_IL = "http://www.israelhayom.co.il/";
+	private String label = null;  // "caption" in the JSON fields
+	private Bitmap image = null;
+	private String url = null;	// will need to replace [DEFAULT] with one of this list http://api.app.israelhayom.co.il/images?key=nas987nh34
+	
 	/*
 	 * {
 sizes: [68]
@@ -30,6 +39,9 @@ sizes: [68]
 -
 } 
 	 */
+	
+	public AnnotatedImage() {
+	}
 	
 	public AnnotatedImage(String label, String url, Bitmap image) {
 		this.label = label;
@@ -59,5 +71,28 @@ sizes: [68]
 
 	public void setImage(Bitmap image) {
 		this.image = image;
+	}
+	
+	public void parse(JsonReader reader) throws IOException {
+
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			if (name.equals("caption")) {
+				this.setLabel(JSONUtil.safeStringRead(reader, true));
+			} else if (name.equals("path")) {
+				this.setUrl(convertImageURL(JSONUtil.safeStringRead(reader, false)));
+			} else if (name.equals("credit")) { // ignore value, since 'null' would cause us to crash
+					JSONUtil.safeStringRead(reader, false);
+			} else {
+				reader.skipValue();
+			}
+		}
+		reader.endObject();
+	}
+
+	private String convertImageURL(String url) {
+		// TODO: allow specific size
+		return HTTP_WWW_ISRAELHAYOM_CO_IL + url.replace(DEFAULT_PLACEHOLDER, DEFAULT_IMAGE_SIZE);
 	}
 }

@@ -25,7 +25,7 @@ public class ArticlePagerActivity extends FragmentActivity {
 		mViewPager.setId(R.id.viewPager);
 		setContentView(mViewPager);
 
-		mArticles = IHAPIWrapper.getInstance("fdsfds", true).getMainPageArticles(10);
+//		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
 		FragmentManager fm = getSupportFragmentManager();
 		mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
 

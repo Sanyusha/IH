@@ -1,16 +1,21 @@
 package android.ih.news.api;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
 import android.ih.news.model.Category;
 import android.ih.news.model.Comment;
 import android.ih.news.model.HeadArticle;
 import android.ih.news.model.SubArticle;
+import android.util.JsonReader;
+import android.util.Log;
 
 /**
  * This is the wrapper class for the Israel Hayom REST API.
@@ -19,19 +24,31 @@ import android.ih.news.model.SubArticle;
  */
 public class IHAPIWrapper {
 
-	private String baseUrl;		// would be http://api.app.israelhayom.co.il/
+	private String baseUrl;
+	private String key;
 	private boolean addSleepTime; // TODO: for debug only, remove when done
 	
 	private static IHAPIWrapper _IHAPIWrapper = null;
 	
-	private IHAPIWrapper(String url, boolean addSleepTime) {
+	private IHAPIWrapper(String url, String key, boolean addSleepTime) {
 		this.baseUrl = url;
+		this.key = key;
 		this.addSleepTime = addSleepTime;
 	}
+
+	private static void closeQuietly(BufferedReader in) {
+		if (in != null) {
+			try {
+				in.close();
+			} catch (IOException e) {
+	        	Log.e("REST", "Failed to close stream", e);
+			}
+		}
+	}
 	
-	public static IHAPIWrapper getInstance(String url, boolean addSleepTime) {
+	public static IHAPIWrapper getInstance(String url, String key, boolean addSleepTime) {
 		if (_IHAPIWrapper == null) {
-			_IHAPIWrapper = new IHAPIWrapper(url, addSleepTime);
+			_IHAPIWrapper = new IHAPIWrapper(url, key, addSleepTime);
 		}
 		
 		return _IHAPIWrapper;
@@ -43,70 +60,109 @@ public class IHAPIWrapper {
 	private String getBaseUrl() {
 		return baseUrl;
 	}
+
+	/**
+	 * The Israel Hayom key.
+	 */
+	public String getKey() {
+		return key;
+	}
+
+	/**
+	 * Adds the Israel Hayom key to the url. 
+	 */
+	private String addKey() {
+		return "?key=" + getKey();
+	}
 	
 	/**
 	 * @return the categories which are the first level of the tree
 	 */
 	public List<Category> getAllCategories() {
 		
-		// TODO: replace with a call to getBaseUrl + "/category?key=nas987nh34"
-		
-		sleepIfNeededToSimulateNetworkTime();
 		List<Category> categories = new ArrayList<Category>();
-		categories.add(new Category("ביקורת טלויזיה", 519, "10005", Category.HEBREW_LANGUAGE));
-		categories.add(new Category("בריאות", 562, "19", Category.HEBREW_LANGUAGE));
-		categories.add(new Category("דעות", 11470, "10001", Category.HEBREW_LANGUAGE));
-		categories.add(new Category("הורוסקופ", 3429, "10009", Category.HEBREW_LANGUAGE));
-		categories.add(new Category("העולם", 3774, "15", Category.HEBREW_LANGUAGE));
+		URL url = null;
+        BufferedReader in = null;
+        try {
+        	url = new URL(getBaseUrl() + "category" + addKey());
+
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
+			try {
+				sleepIfNeededToSimulateNetworkTime();
+				JSONUtil.readObjectArray(reader, categories, Category.class);
+				
+				// filter non-hebrew categories
+				Iterator<Category> iterator = categories.iterator();
+				while (iterator.hasNext()) {
+					Category category = iterator.next();
+					if (!Category.HEBREW_LANGUAGE.equals(category.getLang())) {
+						iterator.remove();
+					}					
+				}
+			} finally {
+				if (reader != null) {
+					reader.close();
+				}
+			}
+        } catch (Exception e) {
+        	Log.e("REST", "Failed to get categories", e);
+        } finally {
+        	closeQuietly(in);
+        }
+
 		return categories;
 	}
 	
 	/**
-	 * To save time, this function returns only the basic info, for the full article call getFullArticle  
-	 * 
-	 * @param num number of articles to fetch
-	 * @return the requested number of articles of the main page
+	 * @return the android home page.
 	 */
-	public List<Article> getMainPageArticles(int num) {
+	public List<Article> getMainPageArticles() {
+
+		List<HeadArticle> primery = new ArrayList<HeadArticle>(); // should be only one
+		List<SubArticle> secondery = new ArrayList<SubArticle>();
+		List<SubArticle> news = new ArrayList<SubArticle>();
+		List<SubArticle> other = new ArrayList<SubArticle>();
 		
-		// TODO: replace with a call to getBaseUrl + "/popular?key=nas987nh34&limit=10"
-		
-		/* data looks like: 
-		 * 0:  {
-				_id: {
-				nid: 182519				// article id
-				oldId: null
-				}-
-				populars: 33			// don't know what is this
-				}-
-				1:  {
-				_id: {
-				nid: 182857
-				oldId: null
-				}-
-				populars: 29
-				}-
-				2:  {
-				_id: {
-				nid: 182697
-				oldId: null
-				}-
-				populars: 14
+		URL url = null;
+        BufferedReader in = null;
+        try {
+        	url = new URL(getBaseUrl() + "homepage/android" + addKey());
+
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
+			try {
+				sleepIfNeededToSimulateNetworkTime();
+				reader.beginObject();
+				while (reader.hasNext()) {
+					String name = reader.nextName();
+					if (name.equals("primary")) {
+						JSONUtil.readObjectArray(reader, primery, HeadArticle.class);
+					} else if (name.equals("secondary")) {
+						JSONUtil.readObjectArray(reader, secondery, SubArticle.class);
+					} else if (name.equals("news")) {
+						JSONUtil.readObjectArray(reader, news, SubArticle.class);
+					} else if (name.equals("other")) {
+						JSONUtil.readObjectArray(reader, other, SubArticle.class);
+					} else {
+						reader.skipValue();
+					}			
+				}				
+			} finally {
+				if (reader != null) {
+					reader.close();
 				}
-		 */
-		
-		sleepIfNeededToSimulateNetworkTime();
-		List<Article> articles = new ArrayList<Article>();
-		
-		AnnotatedImage ai = new AnnotatedImage("aaa", "http://www.israelhayom.co.il/sites/default/files/styles/770x319/public/images/articles/2014/03/22/13954726443363_b.jpg", null);
-		List<AnnotatedImage> lai = new ArrayList<AnnotatedImage>();
-		lai.add(ai);
-		
-		articles.add(new HeadArticle(UUID.randomUUID(), "Main title, " + 0, "Hello world", lai));
-		
-		for (int i = 1; i < num; i++) {
-			articles.add(new SubArticle(UUID.randomUUID(), "Main title, " + i, "Hello world", lai));
-		}
+			}
+        } catch (Exception e) {
+        	Log.e("REST", "Failed to get main home page (or some part of it)", e);
+        } finally {
+        	closeQuietly(in);
+        }
+        
+        // final list
+        List<Article> articles = new ArrayList<Article>();
+        articles.addAll(primery);
+        articles.addAll(secondery);
+        articles.addAll(news);
+        articles.addAll(other);
 		return articles;
 	}
 	

@@ -1,18 +1,26 @@
 package android.ih.news;
 
+import java.util.ArrayList;
 import java.util.List;
 
+
+import android.app.Dialog;
 import android.content.Intent;
+
+import android.graphics.Point; //********************************* #0 added by lilach
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.Article;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -25,10 +33,16 @@ import android.widget.Toast;
 public class ArticleListFragment extends ListFragment implements OnLongClickListener {
 	private static final String TAG = "ArticleListFragment";
 
-	private List<Article> mArticles;
+	private List<Article> mArticles = new ArrayList<Article>();
 	View view;
 	
 	private GestureDetector gestureDetector;
+	
+	//**************************** #1 added by lilach- start
+	boolean stillDown;
+	private static Point lastTouch;
+	//**************************** #1 added by lilach- end
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -37,10 +51,11 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		
 		
 		//mArticles = ArticleLab.get(getActivity()).getArticles();
-		mArticles = IHAPIWrapper.getInstance("Hello world", true).getMainPageArticles(10);
-		
+//		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
+		lastTouch = new Point(); //added by lilach
 		ArticleAdapter adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
+		new GetMainPageTask().execute(adapter);
 	}
 	
 	@Override
@@ -68,23 +83,68 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	    
 	    gestureDetector = new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
 	    
-	    // using TouchListener provides us coordinates of press
-	    view.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-            	gestureDetector.onTouchEvent(event);
-                return true;
-            }
-	    });
 	    
+	    //*************************************** #2 deleted by lilach - start
+//	    // using TouchListener provides us coordinates of press
+//	    view.setOnTouchListener(new View.OnTouchListener() {
+//            public boolean onTouch(View v, MotionEvent event) {
+//            	gestureDetector.onTouchEvent(event);
+//                return true;
+//            }
+//	    });
+	    //*************************************** #2 deleted by lilach - end
 	    
-	    
+	    //**************************************** #3 added by lilach- start 
+	    class touchList implements OnTouchListener
+		{
+			@Override
+			public boolean onTouch(View v, MotionEvent event) 
+			{
+				final int action = event.getAction();
+				switch (action & MotionEvent.ACTION_MASK) {
+				case MotionEvent.ACTION_DOWN: {
+					lastTouch.x = (int) event.getX();
+					lastTouch.y = (int) event.getY();
+					Thread th = new Thread(new waitAndStartDialog());
+					th.start();
+					break;
+				}
+				case MotionEvent.ACTION_UP:
+					stillDown = false;
+				}
+				return true;
+			}
+		}
+		view.setOnTouchListener(new touchList());
+		ListView listView = (ListView)view.findViewById(android.R.id.list);
+		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				int[] location = new int[2];
+				arg1.getLocationOnScreen(location);
+				Dialog dialog = new Dialog(getActivity());
+				WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
+				WMLP.height += 50;
+				WMLP.gravity = Gravity.TOP;// | Gravity.LEFT;
+				WMLP.x = location[0];   //x position
+				WMLP.y = location[1];   //y position
+				dialog.getWindow().setAttributes(WMLP);
+				dialog.setContentView(R.layout.pie_dlg);
+				dialog.setTitle("yeyyyyyy!!!!!!!!");
+				dialog.show();
+				return true;
+			}
+		});
+		//****************************************** #3 added by lilach -end 
+		
 	    return view;
 	}
-	
 	private void setTicker() {
 		String scrollingText;
-		scrollingText ="  •  " + "äåãå: îìæéä ìà îöàä ëì ñéîï ìîèåñ ùðòìí (øåéèøñ)" + "               " +
-				"  •  " + "÷åøéàä äöôåðéú ùéâøä áîäìê äìéìä 30 èéìéí ìòáø äéí áîäìê úøâéì (ñåëðåéåú äéãéòåú)";
+		scrollingText ="  ï¿½  " + "ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)" + "               " +
+				"  ï¿½  " + "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 30 ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)";
 		
 		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
 		tv.setText(scrollingText);
@@ -103,7 +163,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 //		
 //	}
 	
-	private class ArticleAdapter extends ArrayAdapter<Article>{
+	public class ArticleAdapter extends ArrayAdapter<Article>{
 //		public enum RowType {
 //	        // Here we have two items types, you can have as many as you like though
 //	        LIST_ITEM, HEADER_ITEM
@@ -187,4 +247,38 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		Toast.makeText(getActivity(), "On long click listener", Toast.LENGTH_LONG).show();
 		return false;
 	}
+	
+	//******************************************* #4 added by lilach
+	private class waitAndStartDialog implements Runnable
+	{
+		@Override
+		public void run() {
+			stillDown = true;
+			try {
+				Thread.sleep(750);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (stillDown)
+			{
+				ArticleListFragment.this.getActivity().runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						Dialog dialog = new Dialog(getActivity());
+						WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
+						WMLP.gravity = Gravity.TOP | Gravity.LEFT;
+						WMLP.height += 50;
+						WMLP.x = lastTouch.x;   //x position
+						WMLP.y = lastTouch.y;   //y position
+						dialog.getWindow().setAttributes(WMLP);
+						dialog.setContentView(R.layout.pie_dlg);
+						dialog.show();
+					}
+				});
+			}
+		}
+	}
+	//*********************************************** #4 added by lilach- end
 }

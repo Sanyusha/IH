@@ -42,7 +42,7 @@ public class ArticleFragment extends Fragment {
 		mTitleTextView.setText(mArticle.getTitle());
 
 		mContentTextView = (TextView)v.findViewById(R.id.article_contentTextView);
-		mContentTextView.setText(mArticle.getSummery());
+		mContentTextView.setText(mArticle.getSummary());
 
 		return v;
 	}

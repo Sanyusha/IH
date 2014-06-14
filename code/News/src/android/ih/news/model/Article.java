@@ -1,9 +1,15 @@
 package android.ih.news.model;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import android.ih.news.api.JSONUtil;
+import android.ih.news.api.JSONUtil.JSONParsableObject;
+import android.util.JsonReader;
 
 /**
  * A single article. 
@@ -11,12 +17,12 @@ import java.util.UUID;
  * @author Peter
  *
  */
-public abstract class Article implements Item{
+public abstract class Article implements Item, JSONParsableObject {
 
 	private UUID id;		// nid in the json field
 	private Date date;
 	private String title;	// under content.title
-	private String summery; // under content.intro
+	private String summary; // under content.intro
 	private List<Comment> comments;
 
 	// TODO: more fields will follow
@@ -26,10 +32,10 @@ public abstract class Article implements Item{
 	//categories: [1] - 0:  "Crime" - don't think we need this
 	
 
-	public Article(UUID id, String title, String summery, List<AnnotatedImage> images) {
+	public Article(UUID id, String title, String summary, List<AnnotatedImage> images) {
 		this.id = id;
 		this.title = title;
-		this.summery = summery;
+		this.summary = summary;
 		this.images = images;
 	}
 	
@@ -53,11 +59,11 @@ public abstract class Article implements Item{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getSummery() {
-		return summery;
+	public String getSummary() {
+		return summary;
 	}
-	public void setSummery(String summery) {
-		this.summery = summery;
+	public void setSummary(String summery) {
+		this.summary = summery;
 	}
 	public List<Comment> getComments() {
 		return comments;
@@ -88,5 +94,42 @@ public abstract class Article implements Item{
 
 	public void setAuthor(Author author) {
 		this.author = author;
+	}
+
+	public void parse(JsonReader reader) throws IOException, InstantiationException, IllegalAccessException {
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			if (name.equals("nid")) {
+				this.setId(new UUID(0, JSONUtil.safeIntRead(reader)));
+			} else if (name.equals("content")) {
+				readArticleContent(reader);
+			} else if (name.equals("images")) {
+				readArticleImages(reader);
+			} else {
+				reader.skipValue();
+			}
+		}
+		reader.endObject();
+	}
+
+	private void readArticleImages(JsonReader reader) throws IOException, InstantiationException, IllegalAccessException {
+		this.setImages(new ArrayList<AnnotatedImage>());
+		JSONUtil.readObjectArray(reader, this.getImages(), AnnotatedImage.class);
+	}
+
+	private void readArticleContent(JsonReader reader) throws IOException {
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			if (name.equals("title")) {
+				this.setTitle(JSONUtil.safeStringRead(reader, true));
+			} else if (name.equals("intro")) {
+				this.setSummary(JSONUtil.safeStringRead(reader, true));
+			} else {
+				reader.skipValue();
+			}
+		}
+		reader.endObject();
 	}
 }

@@ -13,7 +13,11 @@ public class BasicTree<T> {
 	public void setRoot(Node<T> root) {
 		this.root = root;
 	}
-
+	
+	public BasicTree() {
+		this(null);
+	}
+	
 	public BasicTree(T rootData) {
         root = new Node<T>();
         root.setTouched(true);

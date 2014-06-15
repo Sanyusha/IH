@@ -89,16 +89,16 @@ public class IHAPIWrapper {
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
 				sleepIfNeededToSimulateNetworkTime();
-				JSONUtil.readObjectArray(reader, categories, Category.class);
+				Category.setCategoriesFromReader(reader, categories);
 				
 				// filter non-hebrew categories
-				Iterator<Category> iterator = categories.iterator();
-				while (iterator.hasNext()) {
-					Category category = iterator.next();
-					if (!Category.HEBREW_LANGUAGE.equals(category.getLang())) {
-						iterator.remove();
-					}					
-				}
+//				Iterator<Category> iterator = categories.iterator();
+//				while (iterator.hasNext()) {
+//					Category category = iterator.next();
+//					if (!Category.HEBREW_LANGUAGE.equals(category.getLang())) {
+//						iterator.remove();
+//					}					
+//				}
 			} finally {
 				if (reader != null) {
 					reader.close();

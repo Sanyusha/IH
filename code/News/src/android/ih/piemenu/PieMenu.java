@@ -67,7 +67,15 @@ public class PieMenu extends View{
 
 	public int SOKOL = 0;
 	
-	private BasicTree<PieMenuItem> menu;
+	private static BasicTree<PieMenuItem> menu = new BasicTree<PieMenuItem>(null);
+	
+	/**
+	 * Please lock before change!
+	 * @return the menu
+	 */
+	public static BasicTree<PieMenuItem> getMenu() {
+		return menu;	
+	}
 	
 	//////////////////////////////////////////////////////////
 	private final int MAIN_CIRCLE_RADIUS = 70;
@@ -88,19 +96,15 @@ public class PieMenu extends View{
 	
 	private int level1FirstNode = 0, level1NodeCount;
 	
-	private void createTree() {
-		TestPieMenuItem ai, ai_sub;
+	/*private void createTree() {
+		TestPieMenuItem ai_sub;
 		Node<PieMenuItem> nai, nai1;
 		
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
 				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
 		
-		menu = new BasicTree<PieMenuItem>(ai);
 		
 		List<Node<PieMenuItem>> ail = new ArrayList<Node<PieMenuItem>>();
 		List<Node<PieMenuItem>> ail1;
@@ -286,8 +290,8 @@ public class PieMenu extends View{
 		nai = new Node<PieMenuItem>(ai);
 		ail.add(nai);
 		
-		menu.getRoot().setChildren(ail);
-	}
+		
+	}*/
 	
 	public PieMenu(Context context, AttributeSet attri)
 	{
@@ -296,8 +300,6 @@ public class PieMenu extends View{
 		//this.context = context;
 
 		initPie();
-		
-		createTree();
 		
 		//DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 	    
@@ -751,25 +753,6 @@ public class PieMenu extends View{
 		}
 	}
 	
-	class TestPieMenuItem implements PieMenuItem {
-		private AnnotatedImage img;
-		private String title;
-		
-		public void setImage(AnnotatedImage img) {
-			this.img = img;
-		}
-		
-		public void setTitle(String title) {
-			this.title = title;
-		}
-		
-		public String getTitle() { 
-			return title;
-		}
-		
-		public AnnotatedImage getImage() {
-			return img;
-		}
-	}
+	
 }
 

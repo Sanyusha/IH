@@ -19,7 +19,7 @@ import android.util.JsonReader;
  * @author PeterK
  */
 public class AnnotatedImage implements JSONParsableObject{
-	private static final String DEFAULT_IMAGE_SIZE = "296x122";
+	private static final String DEFAULT_IMAGE_SIZE = "56x56"; // TODO: different sizes for: main art, sub art, pie
 	private static final String DEFAULT_PLACEHOLDER = "[DEFAULT]";
 	private static final String HTTP_WWW_ISRAELHAYOM_CO_IL = "http://www.israelhayom.co.il/";
 	private String label = null;  // "caption" in the JSON fields

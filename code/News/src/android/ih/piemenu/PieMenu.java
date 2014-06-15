@@ -94,7 +94,7 @@ public class PieMenu extends View{
 		
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
@@ -108,7 +108,7 @@ public class PieMenu extends View{
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.culture)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ai.setTitle("Culture");
 		nai = new Node<PieMenuItem>(ai);
 		ail1 = new ArrayList<Node<PieMenuItem>>();
@@ -120,7 +120,7 @@ public class PieMenu extends View{
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.airplane)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ai.setTitle("Army");
 		nai = new Node<PieMenuItem>(ai);
 		ail1 = new ArrayList<Node<PieMenuItem>>();
@@ -163,7 +163,7 @@ public class PieMenu extends View{
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.horos)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		nai = new Node<PieMenuItem>(ai);
 		ail1 = new ArrayList<Node<PieMenuItem>>();
 		ail1.add(new Node<PieMenuItem>(ai_sub));
@@ -174,7 +174,7 @@ public class PieMenu extends View{
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.weather)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		nai = new Node<PieMenuItem>(ai);
 		ail1 = new ArrayList<Node<PieMenuItem>>();
 		ail1.add(new Node<PieMenuItem>(ai_sub));
@@ -185,7 +185,7 @@ public class PieMenu extends View{
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.soccer)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		nai = new Node<PieMenuItem>(ai);
 		ail1 = new ArrayList<Node<PieMenuItem>>();
 		ail1.add(new Node<PieMenuItem>(ai_sub));
@@ -196,36 +196,16 @@ public class PieMenu extends View{
 		
 		ai = new TestPieMenuItem();
 		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.thinker)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		nai = new Node<PieMenuItem>(ai);
 		ail1 = new ArrayList<Node<PieMenuItem>>();
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ail1.add(new Node<PieMenuItem>(ai_sub));
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ail1.add(new Node<PieMenuItem>(ai_sub));
 		nai.setChildren(ail1);
 		ail.add(nai);
@@ -237,15 +217,35 @@ public class PieMenu extends View{
 		ail1 = new ArrayList<Node<PieMenuItem>>();
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ail1.add(new Node<PieMenuItem>(ai_sub));
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ail1.add(new Node<PieMenuItem>(ai_sub));
 		ai_sub = new TestPieMenuItem();
 		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.graph)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
+		ail1.add(new Node<PieMenuItem>(ai_sub));
+		nai.setChildren(ail1);
+		ail.add(nai);
+		
+		ai = new TestPieMenuItem();
+		ai.setImage(new AnnotatedImage("img1", "local", 
+				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
+		nai = new Node<PieMenuItem>(ai);
+		ail1 = new ArrayList<Node<PieMenuItem>>();
+		ai_sub = new TestPieMenuItem();
+		ai_sub.setImage(new AnnotatedImage("img1", "local", 
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
+		ail1.add(new Node<PieMenuItem>(ai_sub));
+		ai_sub = new TestPieMenuItem();
+		ai_sub.setImage(new AnnotatedImage("img1", "local", 
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
+		ail1.add(new Node<PieMenuItem>(ai_sub));
+		ai_sub = new TestPieMenuItem();
+		ai_sub.setImage(new AnnotatedImage("img1", "local", 
+				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
 		ail1.add(new Node<PieMenuItem>(ai_sub));
 		nai.setChildren(ail1);
 		ail.add(nai);

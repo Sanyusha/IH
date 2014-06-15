@@ -44,6 +44,8 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	//**************************** #1 added by lilach- end
 	
 	
+	private static final float PIE_DIALOG_ALPHA = (float) 0.85;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -122,18 +124,21 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				int[] location = new int[2];
-				arg1.getLocationOnScreen(location);
-				Dialog dialog = new Dialog(getActivity());
-				WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
-				WMLP.height += 50;
-				WMLP.gravity = Gravity.TOP;// | Gravity.LEFT;
-				WMLP.x = location[0];   //x position
-				WMLP.y = location[1];   //y position
-				dialog.getWindow().setAttributes(WMLP);
-				dialog.setContentView(R.layout.pie_dlg);
-				dialog.setTitle("yeyyyyyy!!!!!!!!");
-				dialog.show();
+//				int[] location = new int[2];
+//				arg1.getLocationOnScreen(location);
+//				Dialog dialog = new Dialog(getActivity());
+//				WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
+//				WMLP.height += 50;
+//				WMLP.gravity = Gravity.TOP;// | Gravity.LEFT;
+//				WMLP.x = location[0];   //x position
+//				WMLP.y = location[1];   //y position
+//				dialog.getWindow().setAttributes(WMLP);
+//				dialog.setContentView(R.layout.pie_dlg);
+//				dialog.setTitle("yeyyyyyy!!!!!!!!");
+//				dialog.show();
+				
+				showPieDialog();
+				
 				return true;
 			}
 		});
@@ -281,4 +286,23 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		}
 	}
 	//*********************************************** #4 added by lilach- end
+	
+	private void showPieDialog() {
+		Dialog dialog = new Dialog(getActivity(), R.style.full_screen_dialog);
+		WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
+		//WMLP.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		//WMLP.gravity = Gravity.TOP | Gravity.LEFT;
+		//WMLP.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+		//WMLP.height += 50;
+		//WMLP.x = lastTouch.x;   //x position
+		//WMLP.y = lastTouch.y;   //y position
+		WMLP.alpha = PIE_DIALOG_ALPHA;
+		//WMLP.width = WindowManager.LayoutParams.MATCH_PARENT;
+		//WMLP.height = WindowManager.LayoutParams.WRAP_CONTENT;
+		dialog.getWindow().setAttributes(WMLP);
+		//dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+		//		ViewGroup.LayoutParams.MATCH_PARENT);
+		dialog.setContentView(R.layout.pie_dlg);
+		dialog.show();
+	}
 }

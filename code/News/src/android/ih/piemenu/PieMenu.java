@@ -17,6 +17,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.ih.news.R;
@@ -54,9 +55,6 @@ public class PieMenu extends View{
 			0xFF669900,
 			0xFFFF8800,
 			0xFFCC0000};      //colors of the outermost circle
-
-
-
 	
 	private int px, py;
 	//private Context context;
@@ -67,18 +65,26 @@ public class PieMenu extends View{
 
 	public int SOKOL = 0;
 	
-	private BasicTree<PieMenuItem> menu;
+	private static BasicTree<PieMenuItem> menu = new BasicTree<PieMenuItem>(null);
+	
+	/**
+	 * Please lock before change!
+	 * @return the menu
+	 */
+	public static BasicTree<PieMenuItem> getMenu() {
+		return menu;	
+	}
 	
 	//////////////////////////////////////////////////////////
-	private final int MAIN_CIRCLE_RADIUS = 70;
-	private final int BIG_CIRCLE_RADIUS = 400;
-	private final int NEXT_LEVEL_RADIUS = 200;
-	private final int BASIC_ARC_ANGLE = 45;
+	private int MAIN_CIRCLE_RADIUS = 70;
+	private int BIG_CIRCLE_RADIUS;
+	private int NEXT_LEVEL_RADIUS = 200;
+	private static final int BASIC_ARC_ANGLE = 45;
 	
 	private float touchX = -1, touchY = -1;
 	
 	private Paint touchedArea, notTouchedArea;
-	private Paint categoryText;
+	private Paint categoryText, arcText;
 	
 	private TestPieMenuItem threeDotsImg, backImg, mainImg;
 
@@ -88,207 +94,8 @@ public class PieMenu extends View{
 	
 	private int level1FirstNode = 0, level1NodeCount;
 	
-	private void createTree() {
-		TestPieMenuItem ai, ai_sub;
-		Node<PieMenuItem> nai, nai1;
-		
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		
-		menu = new BasicTree<PieMenuItem>(ai);
-		
-		List<Node<PieMenuItem>> ail = new ArrayList<Node<PieMenuItem>>();
-		List<Node<PieMenuItem>> ail1;
-		List<Node<PieMenuItem>> ail2 = new ArrayList<Node<PieMenuItem>>();
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ai.setTitle("Culture");
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ai.setTitle("Army");
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		
-		nai1 = new Node<PieMenuItem>(ai_sub);
-		ail2.add(new Node<PieMenuItem>(ai_sub));
-		ail2.add(new Node<PieMenuItem>(ai_sub));
-		ail2.add(new Node<PieMenuItem>(ai_sub));
-		nai1.setChildren(ail2);
-		
-		ail1.add(nai1);
-		
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ai.setTitle("Politics");
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));;
-		ai.setTitle("Something");
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail1 = new ArrayList<Node<PieMenuItem>>();
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		ai_sub = new TestPieMenuItem();
-		ai_sub.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.globe)));
-		ail1.add(new Node<PieMenuItem>(ai_sub));
-		nai.setChildren(ail1);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail.add(nai);
-		
-		ai = new TestPieMenuItem();
-		ai.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		nai = new Node<PieMenuItem>(ai);
-		ail.add(nai);
-		
-		menu.getRoot().setChildren(ail);
-	}
-	
+	private double ARC_TEXT_PARAM = 0.9;
+			
 	public PieMenu(Context context, AttributeSet attri)
 	{
 		super(context, attri);
@@ -296,8 +103,6 @@ public class PieMenu extends View{
 		//this.context = context;
 
 		initPie();
-		
-		createTree();
 		
 		//DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 	    
@@ -365,6 +170,12 @@ public class PieMenu extends View{
 		categoryText.setColor(Color.WHITE); 
 		categoryText.setTextSize(40);
 		
+		arcText = new Paint(Paint.ANTI_ALIAS_FLAG);
+		arcText.setColor(Color.BLACK); 
+		arcText.setTextSize(40);
+		//arcText.setStyle(Paint.Style.FILL_AND_STROKE);
+		arcText.setTextAlign(Paint.Align.CENTER);
+		
 		level1NodeCount = (360 / BASIC_ARC_ANGLE) - 1;
 		
 		threeDotsImg = new TestPieMenuItem();
@@ -389,7 +200,7 @@ public class PieMenu extends View{
 	protected void onDraw(Canvas canvas) {
 		showPie = false;
 		
-		setOrigin();
+		initValues();
 		
 		drawFirstLevel(canvas);		
 		
@@ -413,9 +224,11 @@ public class PieMenu extends View{
 	/**
 	 * Define the central point of the pie
 	 */
-	private void setOrigin() {
+	private void initValues() {
 		px = getMeasuredWidth() / 2;
 		py = getMeasuredHeight() / 2;
+		
+		BIG_CIRCLE_RADIUS = (Math.min(px, py) * 6) / 10;
 		
 		//Log.d("Sokol", px + ":::" + py );
 	}
@@ -483,10 +296,23 @@ public class PieMenu extends View{
 
 		canvas.drawArc(oval, startAngle, angle, false, circlePaint);
 			
-		if (((nai.getData() != null))) {
+		if (((nai.getData().getImage() != null))) {
 			drawTheArcBitmap(canvas, nai.getData().getImage().getImage(),
 					ovalRadius, nodeNum, nodeCount, startAngle, endAngle);
+		} else {
+			drawTextInArc(canvas, nai.getData().getTitle(), oval, startAngle, angle);
 		}
+	}
+	
+	private void drawTextInArc(Canvas canvas, String text, RectF oval, int startAngle, int angle) {
+		//double rAngle = getRadianAngle(startAngle);
+		//float newRadius = (float) (ARC_TEXT_PARAM * radius);
+		int hOffset = 0, vOffSet = 50;
+		Path path = new Path();
+		
+		path.addArc(oval, startAngle, angle);
+
+		canvas.drawTextOnPath(text, path, hOffset, vOffSet, arcText);
 	}
 	
 	private void drawAdditionalInfo(Canvas canvas, Node<PieMenuItem> nai, int level) {
@@ -629,6 +455,14 @@ public class PieMenu extends View{
 	}
 	
 	/**
+	 * transform to radian angle and go from their "strange" coordinates system
+	 * that starts from 180 on the left side and goes to 540 degrees...
+	 */
+	private double getRadianAngle(int startAngle) {
+		return Math.toRadians(360 + (-1 * startAngle));
+	}
+	
+	/**
 	 * returns the center coordinates and the radius of the incircle
 	 * that we want to show in the arc
 	 */
@@ -642,9 +476,7 @@ public class PieMenu extends View{
 		
 		startAngle += (angle / 2);
 		
-		// transform to radian angle and go from their "strange" coordinates system
-		// that starts from 180 on the left side and goes to 540 degrees...
-		rAngle = Math.toRadians(360 + (-1 * startAngle)); 
+		rAngle = getRadianAngle(startAngle);
 		
 		a = radius;
 		betta = Math.toRadians(angle);
@@ -751,25 +583,6 @@ public class PieMenu extends View{
 		}
 	}
 	
-	class TestPieMenuItem implements PieMenuItem {
-		private AnnotatedImage img;
-		private String title;
-		
-		public void setImage(AnnotatedImage img) {
-			this.img = img;
-		}
-		
-		public void setTitle(String title) {
-			this.title = title;
-		}
-		
-		public String getTitle() { 
-			return title;
-		}
-		
-		public AnnotatedImage getImage() {
-			return img;
-		}
-	}
+	
 }
 

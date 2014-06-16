@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +12,7 @@ import android.ih.news.model.Article;
 import android.ih.news.model.Category;
 import android.ih.news.model.Comment;
 import android.ih.news.model.HeadArticle;
+import android.ih.news.model.Newsflash;
 import android.ih.news.model.SubArticle;
 import android.util.JsonReader;
 import android.util.Log;
@@ -89,16 +89,16 @@ public class IHAPIWrapper {
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
 				sleepIfNeededToSimulateNetworkTime();
-				JSONUtil.readObjectArray(reader, categories, Category.class);
+				Category.setCategoriesFromReader(reader, categories);
 				
 				// filter non-hebrew categories
-				Iterator<Category> iterator = categories.iterator();
-				while (iterator.hasNext()) {
-					Category category = iterator.next();
-					if (!Category.HEBREW_LANGUAGE.equals(category.getLang())) {
-						iterator.remove();
-					}					
-				}
+//				Iterator<Category> iterator = categories.iterator();
+//				while (iterator.hasNext()) {
+//					Category category = iterator.next();
+//					if (!Category.HEBREW_LANGUAGE.equals(category.getLang())) {
+//						iterator.remove();
+//					}					
+//				}
 			} finally {
 				if (reader != null) {
 					reader.close();
@@ -111,6 +111,37 @@ public class IHAPIWrapper {
         }
 
 		return categories;
+	}
+	
+	/**
+	 * @return the newsflash
+	 * @param limit how many items to fetch
+	 * @param pagination where to start
+	 */
+	public List<Newsflash> getAllNewsflash(int limit, int pagination) {
+		
+		List<Newsflash> newsflash = new ArrayList<Newsflash>();
+		URL url = null;
+        BufferedReader in = null;
+        try {
+        	url = new URL(getBaseUrl() + "content/newsflash" + addKey() + "&limit=" + limit + "&offset" + pagination);
+
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
+			try {
+				sleepIfNeededToSimulateNetworkTime();
+				JSONUtil.readObjectArray(reader, newsflash, Newsflash.class);
+			} finally {
+				if (reader != null) {
+					reader.close();
+				}
+			}
+        } catch (Exception e) {
+        	Log.e("REST", "Failed to get categories", e);
+        } finally {
+        	closeQuietly(in);
+        }
+
+		return newsflash;
 	}
 	
 	/**

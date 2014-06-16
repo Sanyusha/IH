@@ -3,13 +3,17 @@ package android.ih.news;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import android.app.Dialog;
 import android.content.Intent;
-
+import android.graphics.BitmapFactory;
 import android.graphics.Point; //********************************* #0 added by lilach
 import android.ih.news.api.IHAPIWrapper;
+import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
+import android.ih.piemenu.BasicTree;
+import android.ih.piemenu.PieMenu;
+import android.ih.piemenu.PieMenuItem;
+import android.ih.piemenu.TestPieMenuItem;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -43,7 +47,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	private static Point lastTouch;
 	//**************************** #1 added by lilach- end
 	
-	
 	private static final float PIE_DIALOG_ALPHA = (float) 0.85;
 	
 	@Override
@@ -58,6 +61,12 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		ArticleAdapter adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
 		new GetMainPageTask().execute(adapter);
+		TestPieMenuItem root = new TestPieMenuItem();
+		root.setResources(getResources());
+		root.setImage(new AnnotatedImage("img1", "local", 
+				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
+		PieMenu.getMenu().getRoot().setData(root);
+		new SetTreeCategoriesTask().execute(PieMenu.getMenu());
 	}
 	
 	@Override

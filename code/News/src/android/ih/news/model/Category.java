@@ -1,6 +1,7 @@
 package android.ih.news.model;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.ih.news.api.JSONUtil;
 import android.ih.news.api.JSONUtil.JSONParsableObject;
@@ -74,5 +75,17 @@ public class Category implements JSONParsableObject{
 			}
 		}
 		reader.endObject();
+	}
+
+	public static void setCategoriesFromReader(JsonReader reader, List<Category> categories) throws IOException {
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			Category cat = new Category();
+			cat.setName(name);
+			cat.parse(reader);
+			categories.add(cat);
+		}
+		reader.endObject();		
 	}
 }

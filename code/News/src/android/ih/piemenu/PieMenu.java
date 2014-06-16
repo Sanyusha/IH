@@ -503,8 +503,6 @@ public class PieMenu extends View{
 	}
 	
 	public boolean onTouchEvent(MotionEvent event) {
-		
-		
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN: {
 				touchX = event.getX();
@@ -517,9 +515,14 @@ public class PieMenu extends View{
 			}
 
 			case MotionEvent.ACTION_MOVE: {
+//				if (Math.abs(touchX - event.getX()) > 10  || Math.abs(touchY - event.getY()) > 10) {
+//					touchX = event.getX();
+//					touchY = event.getY();
+//					invalidate();
+//				}
+//				
 //				touchX = event.getX();
 //				touchY = event.getY();
-//				invalidate();
 			}
 		}
 	    

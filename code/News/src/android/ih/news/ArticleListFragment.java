@@ -53,8 +53,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.articles_title);
-		
-		
 		//mArticles = ArticleLab.get(getActivity()).getArticles();
 //		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
 		lastTouch = new Point(); //added by lilach

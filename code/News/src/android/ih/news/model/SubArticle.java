@@ -22,9 +22,9 @@ public class SubArticle extends Article {
 
 	public View getView(LayoutInflater inflater, View convertView)
 	 {
-	    	//if(convertView == null){
+	    	if (convertView == null) {
 				convertView = (View) inflater.inflate(R.layout.list_item_article, null);
-			//}
+			}
 			
 			//Article article = getItem(position);
 			

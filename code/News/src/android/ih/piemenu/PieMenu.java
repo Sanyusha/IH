@@ -11,6 +11,7 @@ import java.util.List;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,6 +21,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.ih.news.CategoryFragment;
+import android.ih.news.CategoryListActivity;
 import android.ih.news.R;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.piemenu.PieMenuItem;
@@ -30,8 +33,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+import android.app.Dialog;
 
 public class PieMenu extends View{
+	
+	private Dialog dlg;
 	
 	// update
 	private Paint smallCircleCore;
@@ -59,13 +65,14 @@ public class PieMenu extends View{
 	private int px, py;
 	//private Context context;
 	
-	
 	EmbossMaskFilter emboss;
 	EmbossMaskFilter forBig;
 
 	public int SOKOL = 0;
 	
 	private static BasicTree<PieMenuItem> menu = new BasicTree<PieMenuItem>(null);
+	
+	private static String selectedCategory = null;
 	
 	/**
 	 * Please lock before change!
@@ -76,10 +83,12 @@ public class PieMenu extends View{
 	}
 	
 	//////////////////////////////////////////////////////////
-	private int MAIN_CIRCLE_RADIUS = 70;
+	private int MAIN_CIRCLE_RADIUS;
 	private int BIG_CIRCLE_RADIUS;
-	private int NEXT_LEVEL_RADIUS = 200;
+	private int NEXT_LEVEL_RADIUS;
 	private static final int BASIC_ARC_ANGLE = 45;
+	
+	private int categoryTextX, categoryTextY;
 	
 	private float touchX = -1, touchY = -1;
 	
@@ -105,8 +114,8 @@ public class PieMenu extends View{
 		initPie();
 		
 		//DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-	    
-		Toast.makeText(getContext(), "Tree created", Toast.LENGTH_SHORT).show();
+		
+		menu.makeTreeNotTouched(menu.getRoot());
 	}
 	
 	private void initPie()
@@ -168,7 +177,8 @@ public class PieMenu extends View{
 		
 		categoryText = new Paint(Paint.ANTI_ALIAS_FLAG);
 		categoryText.setColor(Color.WHITE); 
-		categoryText.setTextSize(40);
+		categoryText.setTextSize(60);
+		categoryText.setTextAlign(Paint.Align.CENTER);
 		
 		arcText = new Paint(Paint.ANTI_ALIAS_FLAG);
 		arcText.setColor(Color.BLACK); 
@@ -214,11 +224,19 @@ public class PieMenu extends View{
 	private void checkClickOutsidePie() {
 		if (touchX != -1 && touchY != -1 && !showPie) {
 			menu.makeTreeNotTouched(menu.getRoot());
-			contNode.setTouched(false);
-			touchX = -1;
-			touchY = -1;
+			//contNode.setTouched(false);
+			//touchX = -1;
+			//touchY = -1;
 			invalidate();
 		}
+	}
+	
+	public void setDlg(Dialog dlg) {
+		this.dlg = dlg;
+	}
+	
+	public static String getSelectedCategory() {
+		return selectedCategory;
 	}
 	
 	/**
@@ -229,6 +247,13 @@ public class PieMenu extends View{
 		py = getMeasuredHeight() / 2;
 		
 		BIG_CIRCLE_RADIUS = (Math.min(px, py) * 6) / 10;
+		
+		MAIN_CIRCLE_RADIUS = BIG_CIRCLE_RADIUS / 5;
+		
+		NEXT_LEVEL_RADIUS = BIG_CIRCLE_RADIUS  * 3 / 7;
+		
+		categoryTextX = getMeasuredWidth();
+		categoryTextY = py - (BIG_CIRCLE_RADIUS * 5 / 3);
 		
 		//Log.d("Sokol", px + ":::" + py );
 	}
@@ -243,7 +268,12 @@ public class PieMenu extends View{
 		
 		drawChildren(canvas, menuRoot, 1, 180, 540);
 		
-		canvas.drawCircle(px, py, MAIN_CIRCLE_RADIUS, smallCircleCore);
+		if (menuRoot.getTouched()) {
+			canvas.drawCircle(px, py, MAIN_CIRCLE_RADIUS, touchedArea);
+		} else {
+			canvas.drawCircle(px, py, MAIN_CIRCLE_RADIUS, notTouchedArea);
+		}
+		//canvas.drawCircle(px, py, MAIN_CIRCLE_RADIUS, smallCircleCore);
 		
 		setMainCircleImg();
 		
@@ -279,8 +309,12 @@ public class PieMenu extends View{
 		int ovalRadius, angle = endAngle - startAngle;
 		
 		if (nai == null) return;
-		if (nai != contNode && !nai.getParent().getTouched()) return;
+		//Log.d("drawNode", "null");
+		//Log.d("drawNode", nai.getData().getTitle() + ":::" + nai.getParent().getTouched());
+		if (nai != contNode && !nai.getParent().getTouched() && level > 1) return;
+		//Log.d("drawNode", "2 line");
 		if (level < 1) return;
+		//Log.d("drawNode", "level");
 		
 		ovalRadius = calculateRadiusByLevel(level);
 		
@@ -326,7 +360,12 @@ public class PieMenu extends View{
 		
 		switch (level) {
 		case 1:
-			canvas.drawText(title, px - ovalRadius, py - ovalRadius, categoryText);
+			Path path = new Path();
+			path.moveTo(0, categoryTextY);
+			path.lineTo(categoryTextX, categoryTextY);
+			
+			canvas.drawTextOnPath(title, path, 0, 0, categoryText);
+			selectedCategory = title;
 		}	
 	}
 	
@@ -358,6 +397,8 @@ public class PieMenu extends View{
 		
 		l = nai.getChildren();
 		
+		//Log.d("drawChildren", nai.getData().getTitle() + ":::" + l.size());
+		
 		if (l.size() != 0) {
 			angle = calculateNodeArcAngle(level, startAngle, endAngle, l.size());
 			
@@ -377,6 +418,7 @@ public class PieMenu extends View{
 					drawNode(canvas, contNode, level, i, l.size(), sAngle, eAngle);
 					break;
 				} else { // standard case
+					Log.d("drawChildren", nai.getData().getTitle() + ":::" + l.size());
 					drawChildren(canvas, l.get(i), level + 1, sAngle, eAngle);
 					
 					drawNode(canvas, l.get(i), level, i, l.size(), sAngle, eAngle);
@@ -409,12 +451,18 @@ public class PieMenu extends View{
 		int sectorNum = 0;
 		
 		if (isInMainCircle(px, py, touchX, touchY)) {
-			menu.makeTreeNotTouched(menu.getRoot());
+			if (!menu.getRoot().getTouched()) {
+				menu.makeTreeNotTouched(menu.getRoot());
+				contNode.setTouched(false);
+				menu.getRoot().setTouched(true);
+				if (level1FirstNode > 0) level1FirstNode -= level1NodeCount;
+				Log.d("getLevelTouched", level1FirstNode + ":::" + level1NodeCount);
+				
+				//touchX = -1; touchY = -1;
+				
+			}
 			
-			if (level1FirstNode > 0) level1FirstNode -= level1NodeCount;
-			Log.d("getLevelTouched", level1FirstNode + ":::" + level1NodeCount);
-			
-			touchX = -1; touchY = -1;
+			showPie = true;
 			
 			return;
 		}
@@ -428,19 +476,24 @@ public class PieMenu extends View{
 			if (isInArc(sAngle, angle, level, px, py, touchX, touchY, true)) {
 			// if this sector is for the "three dots" node
 				if (i < (l.size() - 1) && eAngle > (endAngle - angle)) {
-						Log.d("getLevelTouched", "TouchedI:::" + i);
-						menu.makeLevelNotTouched(l.get(0));
-						//contNode.setTouched(true);
+						if (!contNode.getTouched()) {
+							Log.d("getLevelTouched", "TouchedI:::" + i);
+							menu.makeLevelNotTouched(l.get(0));
+							menu.getRoot().setTouched(false);
+							contNode.setTouched(true);
+							//showPie = true;
+							level1FirstNode = i;
+							//touchX = -1;
+							//touchY = -1;
+							return;
+						}
+						
 						showPie = true;
-						level1FirstNode = i;
-						touchX = -1;
-						touchY = -1;
-						return;
 				}
 				else {
-					if (l.get(i).getParent().getTouched()) {
+					if (l.get(i).getParent().getTouched() || level == 1) {
 						menu.makeLevelNotTouched(l.get(i));
-						
+						menu.getRoot().setTouched(false);
 						if (level == 1) contNode.setTouched(false);
 						
 						l.get(i).setTouched(true);
@@ -505,24 +558,47 @@ public class PieMenu extends View{
 	public boolean onTouchEvent(MotionEvent event) {
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN: {
+				Log.d("onTouchEvent_DOWN", "X:::" + event.getX() + "Y:::" + event.getY());
 				touchX = event.getX();
 				touchY = event.getY();
+				selectedCategory = null;
 				invalidate();
+				break;
 			}
 			
 			case MotionEvent.ACTION_UP: {
-				
+				Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory);
+				//if (!(selectedCategory == null)) {
+					if (!contNode.getTouched() && !isInMainCircle(px, py, event.getX(), event.getY())) {
+						dlg.dismiss();
+						Intent i = new Intent(getContext(), CategoryListActivity.class);
+						//i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
+						getContext().startActivity(i);
+					} else {
+						contNode.setTouched(false);
+						touchX = -1; touchY = -1;
+						invalidate();
+					}
+				//}
+				break;
 			}
-
+			
 			case MotionEvent.ACTION_MOVE: {
-//				if (Math.abs(touchX - event.getX()) > 10  || Math.abs(touchY - event.getY()) > 10) {
-//					touchX = event.getX();
-//					touchY = event.getY();
-//					invalidate();
-//				}
-//				
-//				touchX = event.getX();
-//				touchY = event.getY();
+				Log.d("onTouchEvent_MOVE", "touchX:::" + touchX + "touchY:::" + touchY + "X:::" + event.getX() + "Y:::" + event.getY());
+				//return false;
+				if ((touchX != event.getX() || touchY != event.getY()) && 
+						(touchX != -1 && touchY != -1)) {
+					Log.d("onTouchEvent_MOVE", "touchX:::" + touchX + "touchY:::" + touchY);
+					touchX = event.getX();
+					touchY = event.getY();
+					selectedCategory = null;
+					invalidate();
+				}
+				
+				//touchX = event.getX();
+				//touchY = event.getY();
+				
+				break;
 			}
 		}
 	    
@@ -580,8 +656,10 @@ public class PieMenu extends View{
 					float toCheckX, float toCheckY) {
 		if ((Math.pow(centerX - toCheckX, 2) + Math.pow(centerY - toCheckY, 2) -
 				Math.pow(MAIN_CIRCLE_RADIUS, 2)) <= 0) {
+			//menu.getRoot().setTouched(true);
 			return true;
 		} else {
+			//menu.getRoot().setTouched(false);
 			return false;
 		}
 	}

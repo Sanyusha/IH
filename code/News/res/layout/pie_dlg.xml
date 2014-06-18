@@ -4,7 +4,8 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
-	<android.ih.piemenu.PieMenu 
+	<android.ih.piemenu.PieMenu
+	    android:id="@+id/pieMenu" 
 		android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </android.ih.piemenu.PieMenu>

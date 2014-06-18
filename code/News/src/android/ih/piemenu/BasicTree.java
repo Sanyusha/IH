@@ -28,9 +28,9 @@ public class BasicTree<T> {
 	public void makeTreeNotTouched(Node<T> n) {
 		if (n == null) return;
 		
-		if (n != this.root) {
+		//if (n != this.root) {
 			n.setTouched(false);
-		}
+		//}
 		
 		for (Node<T> el: n.getChildren()) {
 			makeTreeNotTouched(el);

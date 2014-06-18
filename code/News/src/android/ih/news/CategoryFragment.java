@@ -34,7 +34,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ArticleListFragment extends ListFragment implements OnLongClickListener {
+public class CategoryFragment extends ListFragment implements OnLongClickListener {
 	private static final String TAG = "ArticleListFragment";
 
 	private List<Article> mArticles = new ArrayList<Article>();
@@ -58,24 +58,27 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		lastTouch = new Point(); //added by lilach
 		ArticleAdapter adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
-		new GetMainPageTask().execute(adapter);
-		TestPieMenuItem root = new TestPieMenuItem();
-		root.setResources(getResources());
-		root.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
-		PieMenu.getMenu().getRoot().setData(root);
-		new SetTreeCategoriesTask().execute(PieMenu.getMenu());
+		new GetCategoryTask().execute(adapter);
+		//TestPieMenuItem root = new TestPieMenuItem();
+		//root.setResources(getResources());
+		//root.setImage(new AnnotatedImage("img1", "local", 
+		//		BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
+		//PieMenu.getMenu().getRoot().setData(root);
+		//new SetTreeCategoriesTask().execute(PieMenu.getMenu());
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-	    view = inflater.inflate(R.layout.list_article_fragment, container, false);
+	    view = inflater.inflate(R.layout.category_list_fragment, container, false);
 	    
 	    ImageView logoImage = (ImageView) view.findViewById(R.id.logo_image);
 	    logoImage.setImageResource(R.drawable.black_logo);
 	    
 	    setTicker();
+	    
+	    TextView tv = (TextView) view.findViewById(R.id.category_titleTextView);
+	    tv.setText(PieMenu.getSelectedCategory());
 	    
 	    //logoImage.setOnLongClickListener(this);
 	    
@@ -274,7 +277,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 			}
 			if (stillDown)
 			{
-				ArticleListFragment.this.getActivity().runOnUiThread(new Runnable() {
+				CategoryFragment.this.getActivity().runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {

@@ -205,16 +205,44 @@ public class IHAPIWrapper {
 	 * @param num number of articles to fetch
 	 * @return the requested number of articles of the given category
 	 */
-	public List<Article> getCategoryArticles(Category category, int startIndex, int num) {
+	public List<Article> getCategoryArticles(String category, int startIndex, int count) {
+		int i = 1;
 		
-		// TODO: replace with a call to getBaseUrl + "/content/article?category=name&offset=startIndex&limit=num&sort=desc"
+		Log.d("getCategoryArticles", "category:::" + category);
 		
-		sleepIfNeededToSimulateNetworkTime();
-		List<Article> articles = new ArrayList<Article>();
-		for (int i = 0; i < num; i++) {
-			articles.add(new SubArticle(UUID.randomUUID(), "Some title " + startIndex + ", " + i, null, null));
-		}
-		return articles;
+		List<Article> categoryArticles = new ArrayList<Article>();
+		
+		URL url = null;
+        BufferedReader in = null;
+        try {
+        	url = new URL(getBaseUrl() + "category/" + category + addKey());
+        	Log.d("getCategoryArticles", "url:::" + url);
+        	
+			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
+			try {
+				sleepIfNeededToSimulateNetworkTime();
+				//reader.beginArray();
+				//while (reader.hasNext()) {
+					//Log.d("getCategoryArticles", "i:::" + i);
+					//if (i > startIndex + count) break;
+					
+					//if (i >= startIndex) {
+						JSONUtil.readObjectArray(reader, categoryArticles, SubArticle.class);
+					//}
+				//}				
+			} finally {
+				if (reader != null) {
+					reader.close();
+				}
+			}
+        } catch (Exception e) {
+        	Log.e("getCategoryArticles", e.getMessage());
+        } finally {
+        	closeQuietly(in);
+        }
+        
+        Log.d("getCategoryArticles", "categoryArticles.size:::" + categoryArticles.size());
+		return categoryArticles;
 	}
 	
 	/**

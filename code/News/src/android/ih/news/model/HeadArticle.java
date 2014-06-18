@@ -22,9 +22,9 @@ public class HeadArticle extends Article {
 	
 	public View getView(LayoutInflater inflater, View convertView)
 	 {
-	    	//if(convertView == null){
+	    	if(convertView == null){
 				convertView = (View) inflater.inflate(R.layout.list_first_item_article, null);
-			//}
+			}
 			
 			//Article article = getItem(position);
 			

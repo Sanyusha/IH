@@ -146,7 +146,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 				
 				showPieDialog();
 				
-				return true;
+				return false;
 			}
 		});
 		//****************************************** #3 added by lilach -end 

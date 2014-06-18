@@ -221,15 +221,7 @@ public class IHAPIWrapper {
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
 				sleepIfNeededToSimulateNetworkTime();
-				//reader.beginArray();
-				//while (reader.hasNext()) {
-					//Log.d("getCategoryArticles", "i:::" + i);
-					//if (i > startIndex + count) break;
-					
-					//if (i >= startIndex) {
-						JSONUtil.readObjectArray(reader, categoryArticles, SubArticle.class);
-					//}
-				//}				
+				JSONUtil.readObjectArray(reader, categoryArticles, SubArticle.class);
 			} finally {
 				if (reader != null) {
 					reader.close();

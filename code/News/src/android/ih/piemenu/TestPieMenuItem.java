@@ -13,7 +13,8 @@ public class TestPieMenuItem implements PieMenuItem {
 	private Resources resources;
 	
 	public TestPieMenuItem() {
-		
+		this.img = null;
+		this.title = "No title";
 	}
 	
 	public void setImage(AnnotatedImage img) {

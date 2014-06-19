@@ -22,9 +22,9 @@ public class HeadArticle extends Article {
 	
 	public View getView(LayoutInflater inflater, View convertView)
 	 {
-	    	//if(convertView == null){
+	    	if(convertView == null){
 				convertView = (View) inflater.inflate(R.layout.list_first_item_article, null);
-			//}
+			}
 			
 			//Article article = getItem(position);
 			
@@ -35,7 +35,7 @@ public class HeadArticle extends Article {
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
 			
 			// TODO: work with annotated image
-			articleImageView.setTag(this.getImages().get(0).getUrl());
+			articleImageView.setTag(this.getImages().get(0).getProperURL());
 			new DownloadImagesTask().execute(articleImageView);
 			
 			//articleImageView.setImageResource(R.drawable.images_logo2_he);

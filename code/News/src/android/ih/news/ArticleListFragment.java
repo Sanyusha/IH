@@ -2,7 +2,9 @@ package android.ih.news;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -11,10 +13,12 @@ import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
 import android.ih.news.model.AnnotatedImage.ImageSize;
+import android.ih.news.model.Newsflash;
 import android.ih.piemenu.BasicTree;
 import android.ih.piemenu.PieMenu;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.TestPieMenuItem;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -154,14 +158,38 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		
 	    return view;
 	}
-	private void setTicker() {
-		String scrollingText;
-		scrollingText ="  �  " + "����: ����� �� ���� �� ���� ����� ����� (������)" + "               " +
-				"  �  " + "������ ������� ����� ����� ����� 30 ����� ���� ��� ����� ����� (�������� �������)";
+	
+	public class setNewsFlashTask extends AsyncTask<String, Integer, String>
+	{
+
+		@Override
+		protected String doInBackground(String... params) {
+			String scrollingText = "";
+			List<Newsflash> newsflashList =  IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false)
+					.getAllNewsflash(10, 0);
+			for(Newsflash newsflash : newsflashList){
+				scrollingText = scrollingText.concat(" " +newsflash.getTitle());
+			}
+			return scrollingText;
+		}
 		
+	}
+	
+	private void setTicker() {
+		//added by Lilach - starts
+		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
+		String scrollingText = "";
+		try {
+			scrollingText = setTask.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
 		tv.setText(scrollingText);
-		
 		tv.setSelected(true);
 	}
 	

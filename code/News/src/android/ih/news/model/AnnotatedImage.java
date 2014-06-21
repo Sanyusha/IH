@@ -1,8 +1,12 @@
 package android.ih.news.model;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.ih.news.api.JSONUtil;
 import android.ih.news.api.JSONUtil.JSONParsableObject;
 import android.util.JsonReader;
@@ -120,4 +124,21 @@ sizes: [68]
 		}
 		reader.endObject();
 	}
+
+    public static Bitmap downloadImage(String url) {
+
+    	//TODO: add cache
+
+        Bitmap bmp = null;
+        try{
+            URL ulrn = new URL(url);
+            HttpURLConnection con = (HttpURLConnection)ulrn.openConnection();
+            InputStream is = con.getInputStream();
+            bmp = BitmapFactory.decodeStream(is);
+            if (null != bmp)
+                return bmp;
+
+            }catch(Exception e){}
+        return bmp;
+    }
 }

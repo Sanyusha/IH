@@ -212,8 +212,7 @@ public class IHAPIWrapper {
 		URL url = null;
         BufferedReader in = null;
         try {
-        	// TODO: need to add pagination
-        	url = new URL(getBaseUrl() + "category/" + category + addKey());
+        	url = new URL(getBaseUrl() + "content/article" + addKey() + "&category=" + category + "&offset=" + startIndex + "&limit=" + count);
         	Log.d("getCategoryArticles", "url:::" + url);
         	
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));

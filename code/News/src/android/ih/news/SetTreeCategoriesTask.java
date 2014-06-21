@@ -40,19 +40,18 @@ public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Voi
     		TestPieMenuItem root = (TestPieMenuItem) menu.getRoot().getData();
     		Resources resources = root.getResources();
     		List<Node<PieMenuItem>> children = new ArrayList<Node<PieMenuItem>>();
-    		List<Node<PieMenuItem>> grandChildren = new ArrayList<Node<PieMenuItem>>();
     		TestPieMenuItem catInNode2 = new TestPieMenuItem();
     		catInNode2.setTitle("Sokol");
+    		catInNode2.setResources(resources);
     		catInNode2.setImage(new AnnotatedImage("img1", "local", 
 					BitmapFactory.decodeResource(resources, R.drawable.graph), ImageSize.PIE));
-    		Node<PieMenuItem> n1, n2, n3;
-    		grandChildren.add(new Node<PieMenuItem>(catInNode2));
-    		grandChildren.add(new Node<PieMenuItem>(catInNode2));
-    		grandChildren.add(new Node<PieMenuItem>(catInNode2));
+    		Node<PieMenuItem> node2 = new Node<PieMenuItem>(catInNode2);
+		    children.add(node2);
     		
     		for (Category category : result) {
     			TestPieMenuItem catInNode = new TestPieMenuItem();
     			catInNode.setTitle(category.getName());
+    			catInNode.setResources(resources);
     			
     			// TODO: put image for category
     			Random rand = new Random();
@@ -62,18 +61,18 @@ public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Voi
     		    Log.d("setTree", "randomNum:::" + randomNum);
     		    if (randomNum % 2 == 0) {
     		    	catInNode.setImage(new AnnotatedImage("img1", "local", 
-    					BitmapFactory.decodeResource(resources, R.drawable.globe), ImageSize.PIE));
+    					BitmapFactory.decodeResource(catInNode.getResources(), R.drawable.globe), ImageSize.PIE));
     		    }
     		    
     			Node<PieMenuItem> node = new Node<PieMenuItem>(catInNode);
-    			grandChildren = new ArrayList<Node<PieMenuItem>>(); 
-    			grandChildren.add(new Node<PieMenuItem>(catInNode2));
-        		grandChildren.add(new Node<PieMenuItem>(catInNode2));
-        		grandChildren.add(new Node<PieMenuItem>(catInNode2));
-    			node.setChildren(grandChildren);
-				children.add(node);
+    		    children.add(node);
 			}
     		menu.getRoot().setChildren(children);
+		}
+    		
+		// TODO: change number of categories?
+		for (int i = 0; i < 20 && i < menu.getRoot().getChildren().size(); i++) {
+			new SetTreeSingleCategoryTask().execute(menu.getRoot().getChildren().get(i));				
 		}
     }
 }

@@ -20,6 +20,7 @@ import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.TestPieMenuItem;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -72,6 +73,20 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		new SetTreeCategoriesTask().execute(PieMenu.getMenu());
 	}
 	
+	public void onListItemClick(ListView l, View v, int position, long id){
+		Article a = ((ArticleAdapter)getListAdapter()).getItem(position);
+		Log.d(TAG, a.getTitle() + " was clicked" );
+		
+		Intent i = new Intent(getActivity(), ArticlePagerActivity.class);
+		i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
+		i.putExtra(ArticleFragment.EXTRA_ARTICLE_URL, a.getMobileUrl());
+		
+		Log.d("onItemClickListener", "article_url:::" + a.getMobileUrl());
+		Log.d("onItemClickListener", "article_title:::" + a.getTitle());
+		
+		startActivity(i);
+	}
+		
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -81,19 +96,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	    logoImage.setImageResource(R.drawable.black_logo);
 	    
 	    setTicker();
-	    
-	    //logoImage.setOnLongClickListener(this);
-	    
-//	    final GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
-//	        public void onLongPress(MotionEvent e) {
-//	        	//if(e.getAction() == MotionEvent.ACTION_DOWN) {
-//                    String text = "You click at x = " + e.getX() + " and y = " + e.getY();
-//                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-//                //}
-//	        	
-//	            Log.e("longpress", "Longpress detected");
-//	        }
-//	    });
 	    
 	    gestureDetector = new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
 	    
@@ -151,7 +153,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 				
 				showPieDialog();
 				
-				return false;
+				return true;
 			}
 		});
 		//****************************************** #3 added by lilach -end 
@@ -343,12 +345,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		PieMenu pm = (PieMenu) dialog.findViewById(R.id.pieMenu);
 		pm.setDlg(dialog);
 //		
-//		pm.setOnLongClickListener(new OnLongClickListener() {
-//			public boolean onLongClick(View v) {
-//				Toast.makeText(dialog.getContext(), "Long click on pie", Toast.LENGTH_SHORT).show();
-//				return false;
-//			}
-//		});
+		
 		
 		dialog.show();
 	}

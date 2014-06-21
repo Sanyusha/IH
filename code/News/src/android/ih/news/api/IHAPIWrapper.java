@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import android.ih.news.model.Article;
 import android.ih.news.model.Category;
@@ -205,8 +204,6 @@ public class IHAPIWrapper {
 	 * @return the requested number of articles of the given category
 	 */
 	public List<Article> getCategoryArticles(String category, int startIndex, int count) {
-		int i = 1;
-		
 		Log.d("getCategoryArticles", "category:::" + category);
 		
 		List<Article> categoryArticles = new ArrayList<Article>();
@@ -214,7 +211,7 @@ public class IHAPIWrapper {
 		URL url = null;
         BufferedReader in = null;
         try {
-        	url = new URL(getBaseUrl() + "category/" + category + addKey());
+        	url = new URL(getBaseUrl() + "content/article" + addKey() + "&category=" + category + "&offset=" + startIndex + "&limit=" + count);
         	Log.d("getCategoryArticles", "url:::" + url);
         	
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));

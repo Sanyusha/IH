@@ -30,6 +30,7 @@ import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.BasicTree.Node;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -106,7 +107,8 @@ public class PieMenu extends View{
 	private int level1FirstNode = 0, level1NodeCount;
 	
 	private double ARC_TEXT_PARAM = 0.9;
-			
+	private MotionEvent ev;
+	
 	public PieMenu(Context context, AttributeSet attri)
 	{
 		super(context, attri);
@@ -118,6 +120,32 @@ public class PieMenu extends View{
 		//DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 		
 		menu.makeTreeNotTouched(menu.getRoot());
+		
+		// Obtain MotionEvent object
+		long downTime = SystemClock.uptimeMillis();
+		long eventTime = SystemClock.uptimeMillis() + 100;
+		float x = 0.0f;
+		float y = 0.0f;
+		// List of meta states found here: developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
+		int metaState = 0;
+		MotionEvent motionEvent = MotionEvent.obtain(
+		    downTime, 
+		    eventTime, 
+		    MotionEvent.ACTION_UP, 
+		    x, 
+		    y, 
+		    metaState
+		);
+
+		// Dispatch touch event to view
+		//dispatchTouchEvent(motionEvent);
+		//this.onTouchEvent(motionEvent);
+		motionEvent.recycle();
+	}
+	
+	public void setEv(MotionEvent ev) {
+		this.ev = ev;
+		this.onTouchEvent(ev);
 	}
 	
 	private void initPie()
@@ -570,17 +598,18 @@ public class PieMenu extends View{
 			
 			case MotionEvent.ACTION_UP: {
 				Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory);
+				//if ()
 				//if (!(selectedCategory == null)) {
-					if (!contNode.getTouched() && !isInMainCircle(px, py, event.getX(), event.getY())) {
+					//if (!contNode.getTouched() && !isInMainCircle(px, py, event.getX(), event.getY())) {
 						dlg.dismiss();
 						Intent i = new Intent(getContext(), CategoryListActivity.class);
 						//i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
 						getContext().startActivity(i);
-					} else {
-						contNode.setTouched(false);
-						touchX = -1; touchY = -1;
-						invalidate();
-					}
+					//} else {
+					//	contNode.setTouched(false);
+					//	touchX = -1; touchY = -1;
+					//	invalidate();
+					//}
 				//}
 				break;
 			}

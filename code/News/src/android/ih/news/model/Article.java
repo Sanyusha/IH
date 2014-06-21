@@ -103,6 +103,8 @@ public abstract class Article implements Item, JSONParsableObject {
 			String name = reader.nextName();
 			if (name.equals("nid")) {
 				this.setId(new UUID(0, JSONUtil.safeIntRead(reader)));
+			} else if (name.equals("mobile_url")) {
+				this.setMobileUrl(new URL(JSONUtil.safeStringRead(reader, true)));
 			} else if (name.equals("content")) {
 				readArticleContent(reader);
 			} else if (name.equals("images")) {

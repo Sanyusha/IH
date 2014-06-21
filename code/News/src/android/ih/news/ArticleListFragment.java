@@ -161,6 +161,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	    return view;
 	}
 	
+	//added by lilach 21/6- start
 	public class setNewsFlashTask extends AsyncTask<String, Integer, String>
 	{
 
@@ -178,7 +179,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	}
 	
 	private void setTicker() {
-		//added by Lilach - starts
 		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
 		String scrollingText = "";
 		try {
@@ -194,6 +194,8 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		tv.setText(scrollingText);
 		tv.setSelected(true);
 	}
+	//added by lilach 21/6- ends
+	
 	
 //	@Override
 //	public void onListItemClick(ListView l, View v, int position, long id){

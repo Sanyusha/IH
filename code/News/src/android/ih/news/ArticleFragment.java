@@ -1,4 +1,4 @@
-// test push
+// test push 2
 package android.ih.news;
 
 import java.net.URL;

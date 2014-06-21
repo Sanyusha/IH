@@ -19,7 +19,7 @@
 	 android:scrollHorizontally="true"
 	 android:ellipsize="marquee"
 	 android:marqueeRepeatLimit="marquee_forever"
-	 
+	 android:visibility="visible"
 	 android:paddingTop="2dp"
      android:paddingBottom="2dp"
      android:paddingRight="10dp"

@@ -125,7 +125,6 @@ public class IHAPIWrapper {
         BufferedReader in = null;
         try {
         	url = new URL(getBaseUrl() + "content/newsflash" + addKey() + "&limit=" + limit + "&offset" + pagination);
-
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
 				sleepIfNeededToSimulateNetworkTime();
@@ -252,9 +251,9 @@ public class IHAPIWrapper {
 		
 		sleepIfNeededToSimulateNetworkTime();
 		List<Comment> comments = new ArrayList<Comment>();
-		comments.add(new Comment("арй шащеп!", "арй шащеп"));
-		comments.add(new Comment("лрсе лрсе", "ощде оъмдн"));
-		comments.add(new Comment("ощде айримйврий", "оврйб"));
+		comments.add(new Comment("пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ!", "пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ"));
+		comments.add(new Comment("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ"));
+		comments.add(new Comment("пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅ"));
 		return comments;
 	}
 	

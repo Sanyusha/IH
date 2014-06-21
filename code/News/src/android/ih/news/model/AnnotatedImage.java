@@ -19,12 +19,26 @@ import android.util.JsonReader;
  * @author PeterK
  */
 public class AnnotatedImage implements JSONParsableObject{
-	private static final String DEFAULT_IMAGE_SIZE = "56x56"; // TODO: different sizes for: main art, sub art, pie
 	private static final String DEFAULT_PLACEHOLDER = "[DEFAULT]";
 	private static final String HTTP_WWW_ISRAELHAYOM_CO_IL = "http://www.israelhayom.co.il/";
 	private String label = null;  // "caption" in the JSON fields
 	private Bitmap image = null;
 	private String url = null;	// will need to replace [DEFAULT] with one of this list http://api.app.israelhayom.co.il/images?key=nas987nh34
+	private ImageSize size = ImageSize.SUB_ARTICLE;
+
+	public enum ImageSize{
+		MAIN_ARTICLE ("241x148"), SUB_ARTICLE ("112x96"), PIE ("56x56");
+	
+		private String actualSize = null;
+		
+		ImageSize(String actualSize) {
+			this.actualSize = actualSize;
+		}
+		
+		public String getActualSize() {
+			return actualSize;
+		}
+	}; 
 	
 	/*
 	 * {
@@ -43,10 +57,11 @@ sizes: [68]
 	public AnnotatedImage() {
 	}
 	
-	public AnnotatedImage(String label, String url, Bitmap image) {
+	public AnnotatedImage(String label, String url, Bitmap image, ImageSize size) {
 		this.label = label;
 		this.url = url;
 		this.image = image;
+		this.size = size;
 	}
 
 	public String getLabel() {
@@ -57,12 +72,27 @@ sizes: [68]
 		this.label = label;
 	}
 
-	public String getUrl() {
+	/**
+	 * Use getProperURL.
+	 */
+	private String getUrl() {
 		return url;
 	}
-
+	
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public ImageSize getSize() {
+		return size;
+	}
+
+	public void setSize(ImageSize size) {
+		this.size = size;
+	}
+
+	public String getProperURL() {
+		return HTTP_WWW_ISRAELHAYOM_CO_IL + getUrl().replace(DEFAULT_PLACEHOLDER, size.getActualSize());
 	}
 
 	public Bitmap getImage() {
@@ -81,7 +111,7 @@ sizes: [68]
 			if (name.equals("caption")) {
 				this.setLabel(JSONUtil.safeStringRead(reader, true));
 			} else if (name.equals("path")) {
-				this.setUrl(convertImageURL(JSONUtil.safeStringRead(reader, false)));
+				this.setUrl(JSONUtil.safeStringRead(reader, false));
 			} else if (name.equals("credit")) { // ignore value, since 'null' would cause us to crash
 					JSONUtil.safeStringRead(reader, false);
 			} else {
@@ -89,10 +119,5 @@ sizes: [68]
 			}
 		}
 		reader.endObject();
-	}
-
-	private String convertImageURL(String url) {
-		// TODO: allow specific size
-		return HTTP_WWW_ISRAELHAYOM_CO_IL + url.replace(DEFAULT_PLACEHOLDER, DEFAULT_IMAGE_SIZE);
 	}
 }

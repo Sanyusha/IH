@@ -10,6 +10,7 @@ import android.graphics.Point; //********************************* #0 added by l
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
+import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.BasicTree;
 import android.ih.piemenu.PieMenu;
 import android.ih.piemenu.PieMenuItem;
@@ -63,7 +64,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		TestPieMenuItem root = new TestPieMenuItem();
 		root.setResources(getResources());
 		root.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
+				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), ImageSize.PIE));
 		PieMenu.getMenu().getRoot().setData(root);
 		new SetTreeCategoriesTask().execute(PieMenu.getMenu());
 	}

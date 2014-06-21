@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import android.ih.news.api.JSONUtil;
 import android.ih.news.api.JSONUtil.JSONParsableObject;
+import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.util.JsonReader;
 
 /**
@@ -118,6 +119,16 @@ public abstract class Article implements Item, JSONParsableObject {
 	private void readArticleImages(JsonReader reader) throws IOException, InstantiationException, IllegalAccessException {
 		this.setImages(new ArrayList<AnnotatedImage>());
 		JSONUtil.readObjectArray(reader, this.getImages(), AnnotatedImage.class);
+		
+		for (AnnotatedImage image : this.getImages()) {
+			if (this instanceof HeadArticle) {
+				image.setSize(ImageSize.MAIN_ARTICLE);
+			}
+			else if (this instanceof SubArticle) {
+				image.setSize(ImageSize.SUB_ARTICLE);
+			}
+			// TODO: what about pie?
+		}
 	}
 
 	private void readArticleContent(JsonReader reader) throws IOException {

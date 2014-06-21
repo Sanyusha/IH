@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.ih.news.CategoryFragment;
 import android.ih.news.CategoryListActivity;
 import android.ih.news.R;
 import android.ih.news.model.AnnotatedImage;
+import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.BasicTree.Node;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
@@ -218,17 +220,17 @@ public class PieMenu extends View{
 		
 		threeDotsImg = new TestPieMenuItem();
 		threeDotsImg.setImage(new AnnotatedImage("three dots image", "local",
-					BitmapFactory.decodeResource(getResources(), R.drawable.three_dots)));
+					BitmapFactory.decodeResource(getResources(), R.drawable.three_dots), ImageSize.PIE));
 		threeDotsImg.setTitle("Next...");
 		
 		mainImg = new TestPieMenuItem();
 		mainImg.setImage(new AnnotatedImage("three dots image", "local",
-					BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)));
+					BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), ImageSize.PIE));
 		mainImg.setTitle("Main...");
 		
 		backImg = new TestPieMenuItem();
 		backImg.setImage(new AnnotatedImage("three dots image", "local",
-					BitmapFactory.decodeResource(getResources(), R.drawable.back)));
+					BitmapFactory.decodeResource(getResources(), R.drawable.back), ImageSize.PIE));
 		backImg.setTitle("Back...");
 		
 		contNode = new Node<PieMenuItem>(threeDotsImg);

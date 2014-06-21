@@ -35,7 +35,7 @@ public class SubArticle extends Article {
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
 			
 			if (this.getImages() != null && this.getImages().size() > 0) {
-				articleImageView.setTag(this.getImages().get(0).getUrl());
+				articleImageView.setTag(this.getImages().get(0).getProperURL());
 				new DownloadImagesTask().execute(articleImageView);
 			}
 			

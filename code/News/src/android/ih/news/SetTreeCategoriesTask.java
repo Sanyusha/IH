@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Category;
+import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.BasicTree;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.BasicTree.Node;
@@ -43,7 +44,7 @@ public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Voi
     		TestPieMenuItem catInNode2 = new TestPieMenuItem();
     		catInNode2.setTitle("Sokol");
     		catInNode2.setImage(new AnnotatedImage("img1", "local", 
-					BitmapFactory.decodeResource(resources, R.drawable.graph)));
+					BitmapFactory.decodeResource(resources, R.drawable.graph), ImageSize.PIE));
     		Node<PieMenuItem> n1, n2, n3;
     		grandChildren.add(new Node<PieMenuItem>(catInNode2));
     		grandChildren.add(new Node<PieMenuItem>(catInNode2));
@@ -61,7 +62,7 @@ public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Voi
     		    Log.d("setTree", "randomNum:::" + randomNum);
     		    if (randomNum % 2 == 0) {
     		    	catInNode.setImage(new AnnotatedImage("img1", "local", 
-    					BitmapFactory.decodeResource(resources, R.drawable.globe)));
+    					BitmapFactory.decodeResource(resources, R.drawable.globe), ImageSize.PIE));
     		    }
     		    
     			Node<PieMenuItem> node = new Node<PieMenuItem>(catInNode);

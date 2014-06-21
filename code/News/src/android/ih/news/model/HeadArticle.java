@@ -35,7 +35,7 @@ public class HeadArticle extends Article {
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
 			
 			// TODO: work with annotated image
-			articleImageView.setTag(this.getImages().get(0).getUrl());
+			articleImageView.setTag(this.getImages().get(0).getProperURL());
 			new DownloadImagesTask().execute(articleImageView);
 			
 			//articleImageView.setImageResource(R.drawable.images_logo2_he);

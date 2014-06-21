@@ -2,6 +2,9 @@ package android.ih.news;
 
 import java.net.URL;
 
+///fujgfh,ilh
+import java.util.UUID;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;

@@ -182,7 +182,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
 		String scrollingText = "";
 		try {
-			scrollingText = setTask.get();
+			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

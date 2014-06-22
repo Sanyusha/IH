@@ -26,7 +26,6 @@ public abstract class Article implements Item, JSONParsableObject {
 	private String summary; // under content.intro
 	private List<Comment> comments;
 
-	// TODO: more fields will follow
 	private List<AnnotatedImage> images;
 	private URL mobileUrl;		// this is how we display the article, this page contains embedded images as well
 	private Author author;
@@ -127,7 +126,6 @@ public abstract class Article implements Item, JSONParsableObject {
 			else if (this instanceof SubArticle) {
 				image.setSize(ImageSize.SUB_ARTICLE);
 			}
-			// TODO: what about pie?
 		}
 	}
 

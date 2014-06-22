@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.ih.news.api.JSONUtil;
 import android.ih.news.api.JSONUtil.JSONParsableObject;
 import android.util.JsonReader;
+import android.util.Log;
 
 /**
  * All the data needed to show an Image:
@@ -30,6 +33,8 @@ public class AnnotatedImage implements JSONParsableObject{
 	private String url = null;	// will need to replace [DEFAULT] with one of this list http://api.app.israelhayom.co.il/images?key=nas987nh34
 	private ImageSize size = ImageSize.SUB_ARTICLE;
 
+	private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
+	
 	public enum ImageSize{
 		MAIN_ARTICLE ("241x148"), SUB_ARTICLE ("112x96"), PIE ("56x56");
 	
@@ -127,18 +132,19 @@ sizes: [68]
 
     public static Bitmap downloadImage(String url) {
 
-    	//TODO: add cache
-
-        Bitmap bmp = null;
-        try{
-            URL ulrn = new URL(url);
-            HttpURLConnection con = (HttpURLConnection)ulrn.openConnection();
-            InputStream is = con.getInputStream();
-            bmp = BitmapFactory.decodeStream(is);
-            if (null != bmp)
-                return bmp;
-
-            }catch(Exception e){}
-        return bmp;
+    	if (!imageCache.containsKey(url)) {
+	        try{
+	            URL ulrn = new URL(url);
+	            HttpURLConnection con = (HttpURLConnection)ulrn.openConnection();
+	            InputStream is = con.getInputStream();
+	            Bitmap bmp = BitmapFactory.decodeStream(is);
+	            if (null != bmp) {
+	                imageCache.put(url, bmp);
+	            }
+            } catch(Exception e){
+            	Log.w("image", "couldn't get image", e);
+            }
+    	}
+        return imageCache.get(url);
     }
 }

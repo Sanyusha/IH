@@ -248,9 +248,9 @@ public class IHAPIWrapper {
 		
 		sleepIfNeededToSimulateNetworkTime();
 		List<Comment> comments = new ArrayList<Comment>();
-		comments.add(new Comment("��� �����!", "��� �����"));
-		comments.add(new Comment("���� ����", "���� �����"));
-		comments.add(new Comment("���� ����������", "�����"));
+		comments.add(new Comment("אני ראשון!", "אני ראשון"));
+		comments.add(new Comment("כנסו כנסו", "משהו מתלהם"));
+		comments.add(new Comment("משהו אינטליגנטי", "מגניב"));
 		return comments;
 	}
 	

@@ -6,7 +6,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import android.ih.news.api.CacheList.FetchLimit;
 import android.ih.news.model.Article;
 import android.ih.news.model.Category;
 import android.ih.news.model.Comment;
@@ -28,6 +31,8 @@ public class IHAPIWrapper {
 	private boolean addSleepTime; // TODO: for debug only, remove when done
 	
 	private static IHAPIWrapper _IHAPIWrapper = null;
+	
+	private static Map<String, List<Article>> categoryArticlesCache = new ConcurrentHashMap<String, List<Article>>(); 
 	
 	private IHAPIWrapper(String url, String key, boolean addSleepTime) {
 		this.baseUrl = url;
@@ -196,24 +201,35 @@ public class IHAPIWrapper {
 	}
 	
 	/**
-	 * To save time, this function returns only the basic info, for the full article call getFullArticle  
-	 * 
 	 * @param category the category to which the articles belong
 	 * @param startIndex the point from where to start fetching
-	 * @param num number of articles to fetch
+	 * @param count number of articles to fetch
+	 * @param forceUpdate whether to use cache if possible
 	 * @return the requested number of articles of the given category
 	 */
-	public List<Article> getCategoryArticles(String category, int startIndex, int count) {
+	public List<Article> getCategoryArticles(String category, int startIndex, int count, Boolean forceUpdate) {
 		Log.d("getCategoryArticles", "category:::" + category);
 		
-		List<Article> categoryArticles = new ArrayList<Article>();
+		FetchLimit actualLimit = CacheList.getActualLimit(forceUpdate, categoryArticlesCache.get(category), startIndex, count);
 		
+		// need to fetch records
+		if (actualLimit.getLimit() > 0) {
+			List<Article> categoryArticles = actualCategoryArticlesFetch(category, actualLimit);
+			categoryArticlesCache.put(category, CacheList.fillCacheList(categoryArticlesCache.get(category), forceUpdate, categoryArticles));			
+		}
+        
+		// by this point, cache is updated
+		return CacheList.getItemsFromCacheList(categoryArticlesCache.get(category), startIndex, count);
+	}
+
+	private List<Article> actualCategoryArticlesFetch(String category, FetchLimit actualLimit) {
+		List<Article> categoryArticles = new ArrayList<Article>();
 		URL url = null;
-        BufferedReader in = null;
-        try {
-        	url = new URL(getBaseUrl() + "content/article" + addKey() + "&category=" + category + "&offset=" + startIndex + "&limit=" + count);
-        	Log.d("getCategoryArticles", "url:::" + url);
-        	
+		BufferedReader in = null;
+		try {
+			url = new URL(getBaseUrl() + "content/article" + addKey() + "&category=" + category + "&offset=" + actualLimit.getStart() + "&limit=" + actualLimit.getLimit());
+			Log.d("getCategoryArticles", "url:::" + url);
+			
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
 				sleepIfNeededToSimulateNetworkTime();
@@ -223,19 +239,17 @@ public class IHAPIWrapper {
 					reader.close();
 				}
 			}
-        } catch (Exception e) {
-        	Log.e("getCategoryArticles", e.getMessage());
-        } finally {
-        	closeQuietly(in);
-        }
-        
+		} catch (Exception e) {
+			Log.e("getCategoryArticles", e.getMessage());
+		} finally {
+			closeQuietly(in);
+		}
+
         Log.d("getCategoryArticles", "categoryArticles.size:::" + categoryArticles.size());
 		return categoryArticles;
 	}
-	
+
 	/**
-	 * To save time, this function returns only the basic info, for the full article call getFullArticle  
-	 * 
 	 * @param category the category to which the articles belong
 	 * @param startIndex the point from where to start fetching
 	 * @param num number of articles to fetch

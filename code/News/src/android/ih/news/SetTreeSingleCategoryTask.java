@@ -20,7 +20,7 @@ public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void
     @Override
     protected List<Article> doInBackground(Node<PieMenuItem>... menu) {
     	this.menuCat = menu[0];
-    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(this.menuCat.getData().getTitle(), 0, 3);
+    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(this.menuCat.getData().getTitle(), 0, 3, true);
     }
 
     @Override

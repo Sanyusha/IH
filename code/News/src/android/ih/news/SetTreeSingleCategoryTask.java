@@ -14,7 +14,6 @@ import android.util.Log;
 
 public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void, List<Article>> {
 	
-	//TODO: add cache
 	Node<PieMenuItem> menuCat = null;
 
     @Override
@@ -48,5 +47,6 @@ public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void
     	for (Node<PieMenuItem> node : children) {
     		new DownloadImagesTaskForNode().execute(node);
 		}
+    	new GetCategoryForCacheTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), this.menuCat.getData().getTitle());
     }
 }

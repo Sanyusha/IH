@@ -58,7 +58,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		lastTouch = new Point(); //added by lilach
 		ArticleAdapter adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
-		new GetCategoryTask().execute(adapter);
+		new GetCategoryTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), adapter);
 		//TestPieMenuItem root = new TestPieMenuItem();
 		//root.setResources(getResources());
 		//root.setImage(new AnnotatedImage("img1", "local", 

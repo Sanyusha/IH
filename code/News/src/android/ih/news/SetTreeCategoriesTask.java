@@ -20,7 +20,6 @@ import android.util.Log;
 
 public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Void, List<Category>> {
 	
-	//TODO: add cache
 	BasicTree<PieMenuItem> menu = null;
 
     @Override
@@ -71,8 +70,8 @@ public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Voi
 		}
     		
 		// TODO: change number of categories?
-		for (int i = 0; i < 20 && i < menu.getRoot().getChildren().size(); i++) {
-			new SetTreeSingleCategoryTask().execute(menu.getRoot().getChildren().get(i));				
+		for (int i = 0; i < 14 && i < menu.getRoot().getChildren().size(); i++) {
+			new SetTreeSingleCategoryTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), menu.getRoot().getChildren().get(i));				
 		}
     }
 }

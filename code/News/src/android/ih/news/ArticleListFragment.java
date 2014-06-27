@@ -70,7 +70,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		root.setImage(new AnnotatedImage("img1", "local", 
 				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), ImageSize.PIE));
 		PieMenu.getMenu().getRoot().setData(root);
-		new SetTreeCategoriesTask().execute(PieMenu.getMenu());
+		new SetTreeCategoriesTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), PieMenu.getMenu());
 	}
 	
 	public void onListItemClick(ListView l, View v, int position, long id){

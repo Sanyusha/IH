@@ -11,7 +11,6 @@ import android.util.Log;
 
 public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Article>> {
 	
-	//TODO: add cache
 	ArticleAdapter articleAdapt = null;
 
     @Override

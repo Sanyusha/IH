@@ -18,7 +18,6 @@ public class Newsflash extends Article {
 
 	@Override
 	public View getView(LayoutInflater inflater, View convertView) {
-		// TODO Do we need this for news flash?
 		return null;
 	}
 }

@@ -42,15 +42,19 @@ public class CacheList {
 	 * @param existingCache the existing cache list
 	 * @param startIndex the requested starting point
 	 * @param count the requested number of items
+	 * @param numberOfItems the total amount of items this category holds
 	 * @return a proper starting point and limit, according to the parameters
 	 */
-	public static FetchLimit getActualLimit(Boolean forceUpdate, List<?> existingCache, int startIndex, int count) {
+	public static FetchLimit getActualLimit(Boolean forceUpdate, List<?> existingCache, int startIndex, int count, Integer numberOfItems) {
 		// ignore cache
 		if (forceUpdate || existingCache == null) {
 			existingCache = new ArrayList<Object>();
 		}
 		
 		int endIndex = startIndex + count - 1;
+		if (numberOfItems != null) {
+			endIndex = Math.min(endIndex, numberOfItems - 1);
+		}		
 		startIndex = existingCache.size(); // start fetching immediately after the end of cache
 		count = Math.max(0, endIndex - existingCache.size() + 1); // fetch the exact number
 		

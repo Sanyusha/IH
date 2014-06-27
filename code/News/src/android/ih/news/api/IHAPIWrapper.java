@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.ih.news.api.CacheList.FetchLimit;
 import android.ih.news.model.Article;
@@ -28,16 +33,22 @@ public class IHAPIWrapper {
 
 	private String baseUrl;
 	private String key;
+	private ThreadPoolExecutor categoryArticleExecutor;
 	private boolean addSleepTime; // TODO: for debug only, remove when done
 	
 	private static IHAPIWrapper _IHAPIWrapper = null;
 	
-	private static Map<String, List<Article>> categoryArticlesCache = new ConcurrentHashMap<String, List<Article>>(); 
+	private static Map<String, List<Article>> categoryArticlesCache = new HashMap<String, List<Article>>();
+	private static Map<String, Integer> categoryItemCount = new ConcurrentHashMap<String, Integer>(); // size limit for categories
 	
 	private IHAPIWrapper(String url, String key, boolean addSleepTime) {
 		this.baseUrl = url;
 		this.key = key;
 		this.addSleepTime = addSleepTime;
+		
+		// this allows us to have more threads then the default execute() method
+		BlockingQueue<Runnable> poolWorkQueue = new LinkedBlockingQueue<Runnable>(20);
+		this.categoryArticleExecutor = new ThreadPoolExecutor(10, 20, 10, TimeUnit.SECONDS, poolWorkQueue);
 	}
 
 	private static void closeQuietly(BufferedReader in) {
@@ -63,6 +74,10 @@ public class IHAPIWrapper {
 	 */
 	private String getBaseUrl() {
 		return baseUrl;
+	}
+
+	public ThreadPoolExecutor getCategoryArticleExecutor() {
+		return categoryArticleExecutor;
 	}
 
 	/**
@@ -94,7 +109,7 @@ public class IHAPIWrapper {
 			try {
 				sleepIfNeededToSimulateNetworkTime();
 				Category.setCategoriesFromReader(reader, categories);
-				
+
 				// filter non-hebrew categories
 //				Iterator<Category> iterator = categories.iterator();
 //				while (iterator.hasNext()) {
@@ -103,6 +118,11 @@ public class IHAPIWrapper {
 //						iterator.remove();
 //					}					
 //				}
+
+				// limit pagination for better performance
+				for (Category category : categories) {
+					categoryItemCount.put(category.getName(), category.getNumberOfItems());
+				}				
 			} finally {
 				if (reader != null) {
 					reader.close();
@@ -210,16 +230,26 @@ public class IHAPIWrapper {
 	public List<Article> getCategoryArticles(String category, int startIndex, int count, Boolean forceUpdate) {
 		Log.d("getCategoryArticles", "category:::" + category);
 		
-		FetchLimit actualLimit = CacheList.getActualLimit(forceUpdate, categoryArticlesCache.get(category), startIndex, count);
-		
-		// need to fetch records
-		if (actualLimit.getLimit() > 0) {
-			List<Article> categoryArticles = actualCategoryArticlesFetch(category, actualLimit);
-			categoryArticlesCache.put(category, CacheList.fillCacheList(categoryArticlesCache.get(category), forceUpdate, categoryArticles));			
+		// init cache
+		synchronized (categoryArticlesCache) {
+			if (!categoryArticlesCache.containsKey(category)) {
+				categoryArticlesCache.put(category, new ArrayList<Article>());
+			}
 		}
-        
-		// by this point, cache is updated
-		return CacheList.getItemsFromCacheList(categoryArticlesCache.get(category), startIndex, count);
+		
+		// now we can lock only our category
+		synchronized (categoryArticlesCache.get(category)) {
+			FetchLimit actualLimit = CacheList.getActualLimit(forceUpdate, categoryArticlesCache.get(category), startIndex, count, categoryItemCount.get(category));
+			
+			// need to fetch records
+			if (actualLimit.getLimit() > 0) {
+				List<Article> categoryArticles = actualCategoryArticlesFetch(category, actualLimit);
+				categoryArticlesCache.put(category, CacheList.fillCacheList(categoryArticlesCache.get(category), forceUpdate, categoryArticles));			
+			}
+	        
+			// by this point, cache is updated
+			return CacheList.getItemsFromCacheList(categoryArticlesCache.get(category), startIndex, count);
+		}
 	}
 
 	private List<Article> actualCategoryArticlesFetch(String category, FetchLimit actualLimit) {

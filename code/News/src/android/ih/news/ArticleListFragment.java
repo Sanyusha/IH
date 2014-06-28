@@ -74,17 +74,11 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	}
 	
 	public void onListItemClick(ListView l, View v, int position, long id){
-		Article a = ((ArticleAdapter)getListAdapter()).getItem(position);
-		Log.d(TAG, a.getTitle() + " was clicked" );
+		Article a;
 		
-		Intent i = new Intent(getActivity(), ArticlePagerActivity.class);
-		i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
-		i.putExtra(ArticleFragment.EXTRA_ARTICLE_URL, a.getMobileUrl());
+		a = ((ArticleAdapter)getListAdapter()).getItem(position);
 		
-		Log.d("onItemClickListener", "article_url:::" + a.getMobileUrl());
-		Log.d("onItemClickListener", "article_title:::" + a.getTitle());
-		
-		startActivity(i);
+		StartActivity.startArticleActivity(getActivity(), a.getMobileUrl());
 	}
 		
 	@Override

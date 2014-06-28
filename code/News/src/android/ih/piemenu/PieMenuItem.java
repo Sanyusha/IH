@@ -1,5 +1,7 @@
 package android.ih.piemenu;
 
+import java.net.URL;
+
 import android.ih.news.model.AnnotatedImage;
 
 public interface PieMenuItem { // implemented by article & category
@@ -8,5 +10,6 @@ public interface PieMenuItem { // implemented by article & category
 	
 	String getTitle();
 	
+	URL getUrl();
 //	boolean isClickable();
 }

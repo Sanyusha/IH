@@ -6,6 +6,7 @@ package android.ih.piemenu;
 
 // SHOULD BE IMAGES OF THE FIRST LEVEL ALSO CROPPED AS CIRCLES ???
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +23,21 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.ih.news.CategoryFragment;
 import android.ih.news.CategoryListActivity;
 import android.ih.news.R;
+import android.ih.news.StartActivity;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.BasicTree.Node;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.os.SystemClock;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -75,7 +82,10 @@ public class PieMenu extends View{
 	
 	private static BasicTree<PieMenuItem> menu = new BasicTree<PieMenuItem>(null);
 	
+	private static int GENERAL_PADDING = 50;
+	
 	private static String selectedCategory = null;
+	private static URL selectedArticle = null;
 	
 	/**
 	 * Please lock before change!
@@ -85,18 +95,21 @@ public class PieMenu extends View{
 		return menu;	
 	}
 	
-	//////////////////////////////////////////////////////////
+	//////////////////////////////////
+	
 	private int MAIN_CIRCLE_RADIUS;
 	private int BIG_CIRCLE_RADIUS;
 	private int NEXT_LEVEL_RADIUS;
 	private static final int BASIC_ARC_ANGLE = 45;
 	
 	private int categoryTextX, categoryTextY;
+	private int articleRectX1, articleRectY1, articleRectX2, articleRectY2;
 	
 	private float touchX = -1, touchY = -1;
 	
 	private Paint touchedArea, notTouchedArea;
-	private Paint categoryText, arcText;
+	private TextPaint categoryText, arcText;
+	private TextPaint articleTextPaint;
 	
 	private TestPieMenuItem threeDotsImg, backImg, mainImg;
 
@@ -205,12 +218,18 @@ public class PieMenu extends View{
 		circlePaint.setStrokeWidth(10);  //the width of the outermost circle
 		circlePaint.setColor(Color.GRAY);
 		
-		categoryText = new Paint(Paint.ANTI_ALIAS_FLAG);
+		categoryText = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 		categoryText.setColor(Color.WHITE); 
 		categoryText.setTextSize(60);
-		categoryText.setTextAlign(Paint.Align.CENTER);
+		categoryText.setTextAlign(Paint.Align.LEFT);
+		categoryText.setTypeface(Typeface.DEFAULT_BOLD);
 		
-		arcText = new Paint(Paint.ANTI_ALIAS_FLAG);
+		articleTextPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+		articleTextPaint.setColor(Color.BLACK);
+		articleTextPaint.setTextSize(40);
+		articleTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
+		
+		arcText = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 		arcText.setColor(Color.BLACK); 
 		arcText.setTextSize(40);
 		//arcText.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -269,6 +288,10 @@ public class PieMenu extends View{
 		return selectedCategory;
 	}
 	
+	public static URL getSelectedArticle() {
+		return selectedArticle;
+	}
+	
 	/**
 	 * Define the central point of the pie
 	 */
@@ -283,9 +306,12 @@ public class PieMenu extends View{
 		NEXT_LEVEL_RADIUS = BIG_CIRCLE_RADIUS  * 3 / 7;
 		
 		categoryTextX = getMeasuredWidth();
-		categoryTextY = py - (BIG_CIRCLE_RADIUS * 5 / 3);
+		categoryTextY = py + (BIG_CIRCLE_RADIUS * 5 / 3);
 		
-		//Log.d("Sokol", px + ":::" + py );
+		articleRectX1 = GENERAL_PADDING;
+		articleRectY1 = getMeasuredWidth() * 5 / 100;
+		articleRectX2 = getMeasuredWidth() * 17 / 21;
+		articleRectY2 = py - (BIG_CIRCLE_RADIUS * 5 / 3);
 	}
 	
 	private void drawFirstLevel(Canvas canvas) {
@@ -295,6 +321,9 @@ public class PieMenu extends View{
 		Node<PieMenuItem> menuRoot;
 		
 		menuRoot = menu.getRoot();
+		
+		selectedCategory = null;
+		selectedArticle = null;
 		
 		drawChildren(canvas, menuRoot, 1, 180, 540);
 		
@@ -337,6 +366,7 @@ public class PieMenu extends View{
 					int nodeNum, int nodeCount, int startAngle, int endAngle) {
 		RectF oval;
 		int ovalRadius, angle = endAngle - startAngle;
+		Bitmap nodeImg = null;
 		
 		if (nai == null) return;
 		//Log.d("drawNode", "null");
@@ -352,17 +382,31 @@ public class PieMenu extends View{
 		oval.set(px - ovalRadius, py - ovalRadius, px + ovalRadius, py + ovalRadius);
 		
 		if (nai.getTouched()) {
+			if (level == 1) {
+				selectedCategory = nai.getData().getTitle();
+			}
+			
+			if (level == 2) {
+				selectedArticle = nai.getData().getUrl();
+			}
+			
 			canvas.drawArc(oval, startAngle, angle, true, touchedArea);
-			drawAdditionalInfo(canvas, nai, level);
 		} else {
 			canvas.drawArc(oval, startAngle, angle, true, notTouchedArea);
 		}
-
+		
+		if (((nai.getData().getImage() != null))) {
+			if (nai.getData().getImage().getImage() != null) {
+				nodeImg = nai.getData().getImage().getImage();
+			}
+		}
+		
+		drawAdditionalInfo(canvas, nai, level, nai.getTouched(), nodeNum, nodeCount, nodeImg);
+		
 		canvas.drawArc(oval, startAngle, angle, false, circlePaint);
 			
-		if (((nai.getData().getImage() != null))) {
-			drawTheArcBitmap(canvas, nai.getData().getImage().getImage(),
-					ovalRadius, nodeNum, nodeCount, startAngle, endAngle);
+		if (nodeImg != null) {
+			drawTheArcBitmap(canvas, nodeImg, ovalRadius, nodeNum, nodeCount, startAngle, endAngle);
 		} else {
 			drawTextInArc(canvas, nai.getData().getTitle(), oval, startAngle, angle);
 		}
@@ -379,9 +423,12 @@ public class PieMenu extends View{
 		canvas.drawTextOnPath(text, path, hOffset, vOffSet, arcText);
 	}
 	
-	private void drawAdditionalInfo(Canvas canvas, Node<PieMenuItem> nai, int level) {
+	private void drawAdditionalInfo(Canvas canvas, Node<PieMenuItem> nai, int level, boolean touched,
+									int nodeNum, int nodeCount, Bitmap nodeImg) {
 		String title;
-		int ovalRadius = calculateRadiusByLevel(level);
+		//int ovalRadius;
+		
+		//ovalRadius = calculateRadiusByLevel(level);
 		
 		//if (!nai.getTouched()) return;
 		if (nai.getData().getTitle() == null) return;
@@ -390,13 +437,67 @@ public class PieMenu extends View{
 		
 		switch (level) {
 		case 1:
-			Path path = new Path();
-			path.moveTo(0, categoryTextY);
-			path.lineTo(categoryTextX, categoryTextY);
+			if (touched) {
+				drawLevel1AddInfo(canvas, title);
+			}
 			
-			canvas.drawTextOnPath(title, path, 0, 0, categoryText);
-			selectedCategory = title;
+			break;
+		case 2:
+			//if (touched) selectedArticle = nai.getData().getUrl();
+			
+			drawLevel2AddInfo(canvas, title, nodeNum, nodeCount, nodeImg, touched);
+			
+			break;
 		}	
+	}
+	
+	private void drawLevel1AddInfo(Canvas canvas, String title) {
+		Path path = new Path();
+		path.moveTo(GENERAL_PADDING, categoryTextY);
+		path.lineTo(categoryTextX, categoryTextY);
+		
+		canvas.drawTextOnPath(title, path, 0, 0, categoryText);
+	}
+	
+	private void drawLevel2AddInfo(Canvas canvas, String title, int nodeNum, int nodeCount, Bitmap nodeImg, Boolean touched) {
+		int y1, y2;
+		int rectHeight;
+		int imgPadding;
+		RectF rect;
+		
+		rectHeight = (articleRectY2 - articleRectY1) / nodeCount;
+		
+		y1 = articleRectY1 + (nodeNum * (GENERAL_PADDING / 2)) + (nodeNum * rectHeight);
+		y2 = y1 + rectHeight;
+		
+		// draw the frame rectangle
+		rect = new RectF(articleRectX1, y1, articleRectX2 + rectHeight, y2);
+		if (touched) {
+			canvas.drawRect(rect, touchedArea);
+		} else {
+			canvas.drawRect(rect, notTouchedArea);
+		}
+		
+		// draw the text
+		imgPadding = rectHeight / 10;
+		
+		rect = new RectF(articleRectX1, y1 + imgPadding, articleRectX2 - GENERAL_PADDING, y2);
+		
+		StaticLayout sl = new StaticLayout(title, articleTextPaint, (int)rect.width(), Layout.Alignment.ALIGN_NORMAL, 1, 1, false);
+
+		canvas.save();
+		canvas.translate(rect.left, rect.top);
+		sl.draw(canvas);
+		canvas.restore();
+		
+		// draw the bitmap
+		//rectHeight = rectHeight * 8 / 10;
+		
+		rect = new RectF(articleRectX2 + imgPadding, y1 + imgPadding, articleRectX2 + rectHeight - imgPadding, y2 - imgPadding);
+		
+		if (nodeImg != null) {
+			canvas.drawBitmap(nodeImg, null, rect, null);
+		}
 	}
 	
 	private void drawTheArcBitmap(Canvas canvas, Bitmap bm, int ovalRadius,
@@ -430,6 +531,8 @@ public class PieMenu extends View{
 		//Log.d("drawChildren", nai.getData().getTitle() + ":::" + l.size());
 		
 		if (l.size() != 0) {
+			//if (level == 2) selectedArticle = null;
+			
 			angle = calculateNodeArcAngle(level, startAngle, endAngle, l.size());
 			
 			getLevelTouched(l, level, startAngle, angle, endAngle);
@@ -588,41 +691,47 @@ public class PieMenu extends View{
 	public boolean onTouchEvent(MotionEvent event) {
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN: {
-				Log.d("onTouchEvent_DOWN", "X:::" + event.getX() + "Y:::" + event.getY());
+				//Log.d("onTouchEvent_DOWN", "X:::" + event.getX() + "Y:::" + event.getY());
 				touchX = event.getX();
 				touchY = event.getY();
-				selectedCategory = null;
+				//selectedCategory = null;
+				//selectedArticle = null;
 				invalidate();
 				break;
 			}
 			
 			case MotionEvent.ACTION_UP: {
-				Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory);
-				//if ()
-				//if (!(selectedCategory == null)) {
-					//if (!contNode.getTouched() && !isInMainCircle(px, py, event.getX(), event.getY())) {
+				//Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory + ":::" + selectedArticle);
+//						try {
+//							Thread.sleep(1000);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+						
+						Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory + ":::" + selectedArticle);
+						
 						dlg.dismiss();
-						Intent i = new Intent(getContext(), CategoryListActivity.class);
-						//i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
-						getContext().startActivity(i);
-					//} else {
-					//	contNode.setTouched(false);
-					//	touchX = -1; touchY = -1;
-					//	invalidate();
-					//}
-				//}
+						if (selectedArticle != null) {
+							StartActivity.startArticleActivity(dlg.getContext(), selectedArticle);
+						} else {
+							Intent i = new Intent(getContext(), CategoryListActivity.class);
+						
+							getContext().startActivity(i);
+						}
 				break;
 			}
 			
 			case MotionEvent.ACTION_MOVE: {
-				Log.d("onTouchEvent_MOVE", "touchX:::" + touchX + "touchY:::" + touchY + "X:::" + event.getX() + "Y:::" + event.getY());
+				//Log.d("onTouchEvent_MOVE", "touchX:::" + touchX + "touchY:::" + touchY + "X:::" + event.getX() + "Y:::" + event.getY());
 				//return false;
 				if ((touchX != event.getX() || touchY != event.getY()) && 
 						(touchX != -1 && touchY != -1)) {
 					Log.d("onTouchEvent_MOVE", "touchX:::" + touchX + "touchY:::" + touchY);
 					touchX = event.getX();
 					touchY = event.getY();
-					selectedCategory = null;
+					//selectedCategory = null;
+					//selectedArticle = null;
 					invalidate();
 				}
 				

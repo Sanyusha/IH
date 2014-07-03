@@ -78,7 +78,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		
 		a = ((ArticleAdapter)getListAdapter()).getItem(position);
 		
-		StartActivity.startArticleActivity(getActivity(), a.getMobileUrl());
+		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
 		
 	@Override

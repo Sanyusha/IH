@@ -1,0 +1,10 @@
+body {background-color:black;color:white; margin:0; padding:2%; font-size:1.0em; direction:rtl; text-align:right; font-family:arial; }
+body.ltr { direction:ltr; text-align:left; }
+header { color:white; }
+header .secondary_title { color:#727272; padding:5px 0; }
+h1 { margin:0; }
+#image_box { margin:8px 0; position:relative; width:310px; }
+img { max-width: 100%;}
+.article_body div{ margin-bottom:14px; }
+.article_body a{ color:#727272; }
+.figcaption { z-index:1; background:white; opacity:0.5; color:black;} 

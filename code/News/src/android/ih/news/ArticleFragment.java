@@ -1,14 +1,13 @@
-// test push 2
 package android.ih.news;
 
-import java.net.URL;
-
-///fujgfh,ilh
 import java.util.UUID;
 
+import android.ih.news.api.IHAPIWrapper;
+import android.ih.news.model.AnnotatedImage.ImageSize;
+import android.ih.news.model.Article;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,12 @@ import android.widget.ImageView;
 
 public class ArticleFragment extends Fragment {
 
-	public static final String EXTRA_ARTICLE_ID = "andorid.ih.news.article_id";
-	public static final String EXTRA_ARTICLE_URL = "article_url";
-	private URL mMblURL;
+	public static final String ARTICLE = "article_param";
+	private Article mArticle;
 	
-	public static ArticleFragment newInstance(URL articleURL){
+	public static ArticleFragment newInstance(UUID articleId){
 		Bundle args = new Bundle();
-		args.putSerializable(EXTRA_ARTICLE_URL, articleURL);
+		args.putSerializable(ARTICLE, articleId);
 		
 		ArticleFragment fragment = new ArticleFragment();
 		fragment.setArguments(args);
@@ -33,23 +31,15 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//UUID articleId = (UUID)getArguments().getSerializable(EXTRA_ARTICLE_ID);
-		//mArticle = IHAPIWrapper.getInstance("fdsfadsfas", true).getFullArticle(articleId);
-		mMblURL = (URL) getArguments().getSerializable(EXTRA_ARTICLE_URL);
+		mArticle = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false)
+					.getArticleById((UUID) getArguments().getSerializable(ARTICLE));
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState){
 		View v;
 		WebView myWebView;
-		String mblURL;
 		ImageView logoImage;
-		String htmlText;
-		
-		htmlText = "<html>" + "<head>" + "<style type=\"text/css\">" + "body {background-color: #000000;}" + "p {background-color: #000000;}" + "div {background-color: #000000;}" + "head {background-color: #000000;}" + "</style>" + "</head>";
-		
-		mblURL = this.mMblURL.toString();
-		Log.d("onCreateView", "mblURL:::" + mblURL);
 		
 		v = inflater.inflate(R.layout.fragment_article, parent, false);
 		
@@ -57,22 +47,33 @@ public class ArticleFragment extends Fragment {
 	    logoImage.setImageResource(R.drawable.black_logo);
 	    
 		myWebView = (WebView) v.findViewById(R.id.webview);
-		String htmlData = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" + mblURL;
-	    // lets assume we have /assets/style.css file
-	    //myWebView.loadDataWithBaseURL("file:///android_asset/", htmlData, "text/html", "UTF-8", null);
-	 
-		//myWebView.loadData(htmlText, "text/html", "utf-8");
-		myWebView.loadUrl(mblURL);
+		String htmlData = null;
 		
-		//myWebView.loadDataWithBaseURL(htmlText, mblURL, "text/html", "utf-8", null);
-		
+		if (mArticle.getImages() != null && mArticle.getImages().size() > 0) {
+			htmlData = String.format("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" + 
+				"<body class=\"rtl\">" +
+					"<article id=\"article-article\"><h1 class=\"article_title\">%s</h1><header><div class=\"secondary_title\">%s</div>%s</header>" +
+					"<div id=\"image_box\"><img src=\"%s\" width=\"310\"><div id=\"image_description\" class=\"figcaption\">%s</div></div>" +
+					"<div id=\"article_body\" class=\"article_body\">%s</div></body>", 
+				TextUtils.htmlEncode(mArticle.getTitle()), TextUtils.htmlEncode(mArticle.getSummary()), TextUtils.htmlEncode(mArticle.getAuthor().getName()), 
+				mArticle.getImages().get(0).getProperURLForSize(ImageSize.ARTICLE_PAGE), TextUtils.htmlEncode(mArticle.getImages().get(0).getLabel()), mArticle.getContent()); 
+		} else {
+			htmlData = String.format("<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" />" + 
+					"<body class=\"rtl\">" +
+						"<article id=\"article-article\"><h1 class=\"article_title\">%s</h1><header><div class=\"secondary_title\">%s</div>%s</header>" +
+						"<div id=\"article_body\" class=\"article_body\">%s</div></body>", 
+					TextUtils.htmlEncode(mArticle.getTitle()), TextUtils.htmlEncode(mArticle.getSummary()), TextUtils.htmlEncode(mArticle.getAuthor().getName()), 
+					mArticle.getContent()); 
+		}		
+	    
+	    // we have /assets/style.css file
+	    myWebView.loadDataWithBaseURL("file:///android_asset/", htmlData, "text/html", "UTF-8", mArticle.getMobileUrl().toString());
 		return v;
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		//ArticleLab.get(getActivity()).saveArticles();
 	}
 
 }

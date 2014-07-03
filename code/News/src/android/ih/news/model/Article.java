@@ -28,7 +28,9 @@ public abstract class Article implements Item, JSONParsableObject {
 
 	private List<AnnotatedImage> images;
 	private URL mobileUrl;		// this is how we display the article, this page contains embedded images as well
-	private Author author;
+	private Author author = new Author();
+
+	private String content;
 	//categories: [1] - 0:  "Crime" - don't think we need this
 	
 
@@ -96,6 +98,14 @@ public abstract class Article implements Item, JSONParsableObject {
 		this.author = author;
 	}
 
+	public String getContent() {
+		return content;
+	}
+	
+	public void setContent(String content) {
+		this.content = content;
+	}
+
 	public void parse(JsonReader reader) throws IOException, InstantiationException, IllegalAccessException {
 		reader.beginObject();
 		while (reader.hasNext()) {
@@ -108,6 +118,21 @@ public abstract class Article implements Item, JSONParsableObject {
 				readArticleContent(reader);
 			} else if (name.equals("images")) {
 				readArticleImages(reader);
+			} else if (name.equals("author")) {
+				readArticleAuthor(reader);
+			} else {
+				reader.skipValue();
+			}
+		}
+		reader.endObject();
+	}
+
+	private void readArticleAuthor(JsonReader reader) throws IOException {
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			if (name.equals("name")) {
+				this.getAuthor().setName(JSONUtil.safeStringRead(reader, true));
 			} else {
 				reader.skipValue();
 			}
@@ -137,6 +162,21 @@ public abstract class Article implements Item, JSONParsableObject {
 				this.setTitle(JSONUtil.safeStringRead(reader, true));
 			} else if (name.equals("intro")) {
 				this.setSummary(JSONUtil.safeStringRead(reader, true));
+			} else if (name.equals("raw")) {
+				readArticleRaw(reader);
+			} else {
+				reader.skipValue();
+			}
+		}
+		reader.endObject();
+	}
+	
+	private void readArticleRaw(JsonReader reader) throws IOException {
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			if (name.equals("body")) {
+				this.setContent(JSONUtil.safeStringRead(reader, true));
 			} else {
 				reader.skipValue();
 			}

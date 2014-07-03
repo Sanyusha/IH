@@ -1,6 +1,7 @@
 package android.ih.piemenu;
 
 import java.net.URL;
+import java.util.UUID;
 
 import android.content.res.Resources;
 import android.ih.news.model.AnnotatedImage;
@@ -14,11 +15,13 @@ public class TestPieMenuItem implements PieMenuItem {
 	private String title;
 	URL mURL;
 	private Resources resources;
+	private UUID id;
 	
 	public TestPieMenuItem() {
 		this.img = null;
 		this.title = "No title";
 		this.mURL = null;
+		this.id = null;
 	}
 	
 	public void setImage(AnnotatedImage img) {
@@ -35,8 +38,7 @@ public class TestPieMenuItem implements PieMenuItem {
 	
 	public String getTitle() { 
 		return title;
-	}
-	
+	}	
 	
 	public AnnotatedImage getImage() {
 		return img;
@@ -52,5 +54,13 @@ public class TestPieMenuItem implements PieMenuItem {
 
 	public URL getUrl() {
 		return mURL;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+	
+	public UUID getId() {
+		return null;
 	}
 }

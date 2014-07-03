@@ -10,6 +10,9 @@ public class Author {
 	private String name;
 	private AnnotatedImage image; // this is optional
 	
+	public Author() {
+	}
+	
 	public Author(String name, AnnotatedImage image) {
 		super();
 		this.name = name;

@@ -36,7 +36,7 @@ public class AnnotatedImage implements JSONParsableObject{
 	private static Map<String, Bitmap> imageCache = new HashMap<String, Bitmap>();
 	
 	public enum ImageSize{
-		MAIN_ARTICLE ("241x148"), SUB_ARTICLE ("112x96"), PIE ("56x56");
+		MAIN_ARTICLE ("241x148"), SUB_ARTICLE ("112x96"), PIE ("56x56"), ARTICLE_PAGE("433x295");
 	
 		private String actualSize = null;
 		
@@ -101,7 +101,11 @@ sizes: [68]
 	}
 
 	public String getProperURL() {
-		return HTTP_WWW_ISRAELHAYOM_CO_IL + getUrl().replace(DEFAULT_PLACEHOLDER, size.getActualSize());
+		return getProperURLForSize(this.size);
+	}
+	
+	public String getProperURLForSize(ImageSize reqSize) {
+		return HTTP_WWW_ISRAELHAYOM_CO_IL + getUrl().replace(DEFAULT_PLACEHOLDER, reqSize.getActualSize());
 	}
 
 	public Bitmap getImage() {

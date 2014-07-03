@@ -12,6 +12,9 @@ import java.util.List;
 
 
 
+
+import java.util.UUID;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +32,7 @@ import android.ih.news.CategoryListActivity;
 import android.ih.news.R;
 import android.ih.news.StartActivity;
 import android.ih.news.model.AnnotatedImage;
+import android.ih.news.model.Article;
 import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.BasicTree.Node;
@@ -85,7 +89,7 @@ public class PieMenu extends View{
 	private static int GENERAL_PADDING = 50;
 	
 	private static String selectedCategory = null;
-	private static URL selectedArticle = null;
+	private static UUID selectedArticle = null;
 	
 	/**
 	 * Please lock before change!
@@ -288,7 +292,7 @@ public class PieMenu extends View{
 		return selectedCategory;
 	}
 	
-	public static URL getSelectedArticle() {
+	public static UUID getSelectedArticle() {
 		return selectedArticle;
 	}
 	
@@ -387,7 +391,7 @@ public class PieMenu extends View{
 			}
 			
 			if (level == 2) {
-				selectedArticle = nai.getData().getUrl();
+				selectedArticle = nai.getData().getId();
 			}
 			
 			canvas.drawArc(oval, startAngle, angle, true, touchedArea);
@@ -709,11 +713,11 @@ public class PieMenu extends View{
 //							e.printStackTrace();
 //						}
 						
-						Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory + ":::" + selectedArticle);
+						Log.d("onTouchEvent_UP", "X:::" + event.getX() + "Y:::" + event.getY() + selectedCategory + ":::" + getSelectedArticle());
 						
 						dlg.dismiss();
 						if (selectedArticle != null) {
-							StartActivity.startArticleActivity(dlg.getContext(), selectedArticle);
+							StartActivity.startArticleActivity(dlg.getContext(), getSelectedArticle());
 						} else {
 							Intent i = new Intent(getContext(), CategoryListActivity.class);
 						

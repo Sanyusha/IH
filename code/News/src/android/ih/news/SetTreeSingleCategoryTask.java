@@ -36,8 +36,11 @@ public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void
     			TestPieMenuItem catInNode = new TestPieMenuItem();
     			catInNode.setTitle(article.getTitle());
     			catInNode.setResources(((TestPieMenuItem)menuCat.getData()).getResources());
-    			catInNode.setImage(article.getImages().get(0));
+    			if (article.getImages() != null && article.getImages().size() > 0) {
+    				catInNode.setImage(article.getImages().get(0));
+    			}
     			catInNode.setURL(article.getMobileUrl());
+    			catInNode.setId(article.getId());
     			
     			Node<PieMenuItem> node = new Node<PieMenuItem>(catInNode);
 				children.add(node);

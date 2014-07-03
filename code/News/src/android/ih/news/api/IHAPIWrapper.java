@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -40,6 +41,7 @@ public class IHAPIWrapper {
 	
 	private static Map<String, List<Article>> categoryArticlesCache = new HashMap<String, List<Article>>();
 	private static Map<String, Integer> categoryItemCount = new ConcurrentHashMap<String, Integer>(); // size limit for categories
+	private static Map<UUID, Article> articleCache = new ConcurrentHashMap<UUID, Article>(); // simplify param pass
 	
 	private IHAPIWrapper(String url, String key, boolean addSleepTime) {
 		this.baseUrl = url;
@@ -217,9 +219,16 @@ public class IHAPIWrapper {
         articles.addAll(secondery);
         articles.addAll(news);
         articles.addAll(other);
+        addArticlesToCache(articles);
 		return articles;
 	}
 	
+	private void addArticlesToCache(List<Article> articles) {
+		for (Article article : articles) {
+			articleCache.put(article.getId(), article);
+		}
+	}
+
 	/**
 	 * @param category the category to which the articles belong
 	 * @param startIndex the point from where to start fetching
@@ -244,7 +253,12 @@ public class IHAPIWrapper {
 			// need to fetch records
 			if (actualLimit.getLimit() > 0) {
 				List<Article> categoryArticles = actualCategoryArticlesFetch(category, actualLimit);
-				categoryArticlesCache.put(category, CacheList.fillCacheList(categoryArticlesCache.get(category), forceUpdate, categoryArticles));			
+				categoryArticlesCache.put(category, CacheList.fillCacheList(categoryArticlesCache.get(category), forceUpdate, categoryArticles));	
+				addArticlesToCache(categoryArticles);
+				// category has ended unexpectedly - limit pagination
+				if (categoryArticles.size() < actualLimit.getLimit()) {
+					categoryItemCount.put(category, categoryArticlesCache.get(category).size());
+				}
 			}
 	        
 			// by this point, cache is updated
@@ -310,5 +324,9 @@ public class IHAPIWrapper {
 				System.err.println("sleep failed, returning faster then expected");
 			}
 		}
+	}
+
+	public Article getArticleById(UUID articleId) {
+		return articleCache.get(articleId);
 	}
 }

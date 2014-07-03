@@ -17,6 +17,9 @@ public class DownloadImagesTaskForNode extends AsyncTask<Node<PieMenuItem>, Void
     @Override
     protected Bitmap doInBackground(Node<PieMenuItem>... node) {
         this.node = (TestPieMenuItem) node[0].getData();
+        if (this.node.getImage() == null) {
+			return null;
+		}
         this.node.getImage().setSize(ImageSize.PIE);
         return AnnotatedImage.downloadImage(this.node.getImage().getProperURL());
     }

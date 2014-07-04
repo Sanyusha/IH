@@ -25,11 +25,6 @@ public class SubArticle extends Article {
 	    	if (convertView == null) {
 				convertView = (View) inflater.inflate(R.layout.list_item_article, null);
 			}
-			
-			//Article article = getItem(position);
-			
-//			Button supposedToBePicture = (Button)convertView.findViewById(R.id.supposed_to_be_picture);
-//			supposedToBePicture.setText("picture");
 
 			ImageView articleImageView;
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
@@ -38,8 +33,6 @@ public class SubArticle extends Article {
 				articleImageView.setTag(this.getImages().get(0).getProperURL());
 				new DownloadImagesTask().execute(articleImageView);
 			}
-			
-			//articleImageView.setImageResource(R.drawable.images_logo2_he);
 			
 			TextView titleTextView = (TextView)convertView.findViewById(R.id.article_list_item_titleTextView);
 			titleTextView.setText(this.getTitle());

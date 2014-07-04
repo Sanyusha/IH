@@ -61,6 +61,6 @@ public class TestPieMenuItem implements PieMenuItem {
 	}
 	
 	public UUID getId() {
-		return null;
+		return this.id;
 	}
 }

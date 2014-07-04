@@ -45,6 +45,7 @@ public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void
     			Node<PieMenuItem> node = new Node<PieMenuItem>(catInNode);
 				children.add(node);
 			}
+    		
     		menuCat.setChildren(children);
 		}
     	

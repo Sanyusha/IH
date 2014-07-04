@@ -203,71 +203,74 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 //	}
 	
 	public class ArticleAdapter extends ArrayAdapter<Article>{
-//		public enum RowType {
-//	        // Here we have two items types, you can have as many as you like though
-//	        LIST_ITEM, HEADER_ITEM
-//	    }
+		private static final int TYPE_ITEM = 0;
+        private static final int TYPE_MAIN = 1;
+        private static final int TYPE_MAX_COUNT = 2;
 		
+        private LayoutInflater mInflater;
+        
 		public ArticleAdapter(List<android.ih.news.model.Article> mArticles){
 			super(getActivity(), 0 , mArticles);
+			
+			mInflater = getActivity().getLayoutInflater();
 		}
 		
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent){
-			/*
-			Log.d("adapter", "positionOUT:::" + position);
-			
-			View view;
-			
-			if(convertView == null){
-				Log.d("adapter", "position:::" + position);
-				if (position == 0) {
-					convertView = getActivity().getLayoutInflater().inflate(R.layout.list_first_item_article, null);
-				} else {
-					convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_article, null);
-				}
-				
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder = null;
+            int type = getItemViewType(position);
+            
+            //System.out.println("getView " + position + " " + convertView + " type = " + type);
+            
+            if (convertView == null) {
+                holder = new ViewHolder();
+                
+                switch (type) {
+                    case TYPE_MAIN:
+                        convertView = mInflater.inflate(R.layout.list_first_item_article, null);
+                        
+                        holder.titleTextView = (TextView) convertView.findViewById(R.id.article_list_item_titleTextView);
+                        holder.articleImageView = (ImageView) convertView.findViewById(R.id.list_item_imageView);
+                        holder.summaryTextView = (TextView) convertView.findViewById(R.id.article_list_item_summaryTextView);
+                        
+                        break;
+                    case TYPE_ITEM:
+                        convertView = mInflater.inflate(R.layout.list_item_article, null);
+                        
+                        holder.titleTextView = (TextView) convertView.findViewById(R.id.article_list_item_titleTextView);
+                        holder.articleImageView = (ImageView) convertView.findViewById(R.id.list_item_imageView);
+                        holder.summaryTextView = (TextView) convertView.findViewById(R.id.article_list_item_summaryTextView);
+                        
+                        break;
+                }
+                
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder)convertView.getTag();
+            }
+            
+            holder.titleTextView.setText(mArticles.get(position).getTitle());
+            
+            if (mArticles.get(position).getImages() != null && mArticles.get(position).getImages().size() > 0) {
+            	holder.articleImageView.setTag(mArticles.get(position).getImages().get(0).getProperURL());
+				new DownloadImagesTask().execute(holder.articleImageView);
 			}
-			
-			Article article = getItem(position);
-			
-//			Button supposedToBePicture = (Button)convertView.findViewById(R.id.supposed_to_be_picture);
-//			supposedToBePicture.setText("picture");
-
-			ImageView articleImageView;
-			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
-			
-			articleImageView.setTag(article.getImgLink());
-			new DownloadImagesTask().execute(articleImageView);
-			
-			//articleImageView.setImageResource(R.drawable.images_logo2_he);
-			
-			TextView titleTextView = (TextView)convertView.findViewById(R.id.article_list_item_titleTextView);
-			titleTextView.setText(article.getTitle());
-			
-			TextView summaryTextView = (TextView)convertView.findViewById(R.id.article_list_item_summaryTextView);
-			summaryTextView.setText(article.getSummary());
-			
-						
-			return convertView;
-			*/
+            
+            holder.summaryTextView.setText(mArticles.get(position).getSummary());
+            
+            return convertView;
 			
 			// Use getView from the Item interface
-	        return mArticles.get(position).getView(getActivity().getLayoutInflater(), convertView);
+	        //return mArticles.get(position).getView(getActivity().getLayoutInflater(), convertView);
 		}
 		
-		@Override
 	    public int getViewTypeCount() {
-	        // Get the number of items in the enum
-	        return 2;
-	 
+	        return TYPE_MAX_COUNT;
 	    }
 	 
-	    /*@Override
 	    public int getItemViewType(int position) {
-	        // Use getViewType from the Item interface
-	        return mArticles.get(position).getViewType();
-	    }*/
+	        return position == 0 ? TYPE_MAIN : TYPE_ITEM;
+	    }
 
 	}
 

@@ -2,18 +2,23 @@ package android.ih.news;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Point; //********************************* #0 added by lilach
+import android.ih.news.ArticleListFragment.ArticleAdapter;
+import android.ih.news.ArticleListFragment.setNewsFlashTask;
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
+import android.ih.news.model.Newsflash;
 import android.ih.piemenu.BasicTree;
 import android.ih.piemenu.PieMenu;
 import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.TestPieMenuItem;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -156,17 +161,47 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		
 	    return view;
 	}
-	private void setTicker() {
-		String scrollingText;
-		scrollingText ="  �  " + "����: ����� �� ���� �� ���� ����� ����� (������)" + "               " +
-				"  �  " + "������ ������� ����� ����� ����� 30 ����� ���� ��� ����� ����� (�������� �������)";
-		
-		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
-		tv.setText(scrollingText);
-		
-		tv.setSelected(true);
+	
+	public void onListItemClick(ListView l, View v, int position, long id){
+		Article a;
+
+		a = ((ArticleAdapter)getListAdapter()).getItem(position);
+
+		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
 	
+	public class setNewsFlashTask extends AsyncTask<String, Integer, String>
+	{
+
+		@Override
+		protected String doInBackground(String... params) {
+			String scrollingText = "";
+			List<Newsflash> newsflashList =  IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false)
+					.getAllNewsflash(10, 0);
+			for(Newsflash newsflash : newsflashList){
+				scrollingText = scrollingText.concat(" " +newsflash.getTitle());
+			}
+			return scrollingText;
+		}
+
+	}
+
+	private void setTicker() {
+		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
+		String scrollingText = "";
+		try {
+			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
+		tv.setText(scrollingText);
+		tv.setSelected(true);
+	}
 //	@Override
 //	public void onListItemClick(ListView l, View v, int position, long id){
 //		Article a = ((ArticleAdapter)getListAdapter()).getItem(position);
@@ -281,15 +316,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 
 					@Override
 					public void run() {
-						Dialog dialog = new Dialog(getActivity());
-						WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
-						WMLP.gravity = Gravity.TOP | Gravity.LEFT;
-						WMLP.height += 50;
-						WMLP.x = lastTouch.x;   //x position
-						WMLP.y = lastTouch.y;   //y position
-						dialog.getWindow().setAttributes(WMLP);
-						dialog.setContentView(R.layout.pie_dlg);
-						dialog.show();
+						showPieDialog();
 					}
 				});
 			}

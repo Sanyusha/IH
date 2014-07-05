@@ -78,7 +78,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 	    setTicker();
 	    
 	    TextView tv = (TextView) view.findViewById(R.id.category_titleTextView);
-	    tv.setText(PieMenu.getSelectedCategory());
+	    tv.setText(PieMenu.getSelectedCategory().getTitle());
 	    
 	    //logoImage.setOnLongClickListener(this);
 	    

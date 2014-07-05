@@ -39,29 +39,31 @@ public class SetTreeCategoriesTask extends AsyncTask<BasicTree<PieMenuItem>, Voi
     		TestPieMenuItem root = (TestPieMenuItem) menu.getRoot().getData();
     		Resources resources = root.getResources();
     		List<Node<PieMenuItem>> children = new ArrayList<Node<PieMenuItem>>();
-    		TestPieMenuItem catInNode2 = new TestPieMenuItem();
-    		catInNode2.setTitle("Sokol");
-    		catInNode2.setResources(resources);
-    		catInNode2.setImage(new AnnotatedImage("img1", "local", 
-					BitmapFactory.decodeResource(resources, R.drawable.graph), ImageSize.PIE));
-    		Node<PieMenuItem> node2 = new Node<PieMenuItem>(catInNode2);
-		    children.add(node2);
+//    		TestPieMenuItem catInNode2 = new TestPieMenuItem();
+//    		catInNode2.setTitle("Sokol");
+//    		catInNode2.setResources(resources);
+//    		catInNode2.setImage(new AnnotatedImage("img1", "local", 
+//					BitmapFactory.decodeResource(resources, R.drawable.graph), ImageSize.PIE));
+//    		Node<PieMenuItem> node2 = new Node<PieMenuItem>(catInNode2);
+//		    children.add(node2);
     		
     		for (Category category : result) {
     			TestPieMenuItem catInNode = new TestPieMenuItem();
     			catInNode.setTitle(category.getName());
     			catInNode.setResources(resources);
+    			catInNode.setCode(category.getCode());
+    			catInNode.setImage(category.getAi());
     			
     			// TODO: put image for category
-    			Random rand = new Random();
-    		    // nextInt is normally exclusive of the top value,
-    		    // so add 1 to make it inclusive
-    		    int randomNum = rand.nextInt((10 - 1) + 1) + 1;
-    		    Log.d("setTree", "randomNum:::" + randomNum);
-    		    if (randomNum % 2 == 0) {
-    		    	catInNode.setImage(new AnnotatedImage("img1", "local", 
-    					BitmapFactory.decodeResource(catInNode.getResources(), R.drawable.globe), ImageSize.PIE));
-    		    }
+//    			Random rand = new Random();
+//    		    // nextInt is normally exclusive of the top value,
+//    		    // so add 1 to make it inclusive
+//    		    int randomNum = rand.nextInt((10 - 1) + 1) + 1;
+//    		    Log.d("setTree", "randomNum:::" + randomNum);
+//    		    if (randomNum % 2 == 0) {
+//    		    	catInNode.setImage(new AnnotatedImage("img1", "local", 
+//    					BitmapFactory.decodeResource(catInNode.getResources(), R.drawable.globe), ImageSize.PIE));
+//    		    }
     		    
     			Node<PieMenuItem> node = new Node<PieMenuItem>(catInNode);
     		    children.add(node);

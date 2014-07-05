@@ -19,7 +19,7 @@ public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void
     @Override
     protected List<Article> doInBackground(Node<PieMenuItem>... menu) {
     	this.menuCat = menu[0];
-    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(this.menuCat.getData().getTitle(), 0, 3, true);
+    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(this.menuCat.getData().getCode(), 0, 3, true);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class SetTreeSingleCategoryTask extends AsyncTask<Node<PieMenuItem>, Void
     	for (Node<PieMenuItem> node : children) {
     		new DownloadImagesTaskForNode().execute(node);
 		}
-    	new GetCategoryForCacheTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), this.menuCat.getData().getTitle());
+    	new GetCategoryForCacheTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), this.menuCat.getData());
     }
 }

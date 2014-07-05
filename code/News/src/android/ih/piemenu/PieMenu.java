@@ -82,13 +82,12 @@ public class PieMenu extends View{
 	EmbossMaskFilter emboss;
 	EmbossMaskFilter forBig;
 
-	public int SOKOL = 0;
 	
 	private static BasicTree<PieMenuItem> menu = new BasicTree<PieMenuItem>(null);
 	
 	private static int GENERAL_PADDING = 50;
 	
-	private static String selectedCategory = null;
+	private static PieMenuItem selectedCategory = null;
 	private static UUID selectedArticle = null;
 	
 	/**
@@ -288,7 +287,7 @@ public class PieMenu extends View{
 		this.dlg = dlg;
 	}
 	
-	public static String getSelectedCategory() {
+	public static PieMenuItem getSelectedCategory() {
 		return selectedCategory;
 	}
 	
@@ -387,7 +386,7 @@ public class PieMenu extends View{
 		
 		if (nai.getTouched()) {
 			if (level == 1) {
-				selectedCategory = nai.getData().getTitle();
+				selectedCategory = nai.getData();
 			}
 			
 			if (level == 2) {

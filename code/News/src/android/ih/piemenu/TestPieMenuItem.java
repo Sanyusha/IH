@@ -16,12 +16,14 @@ public class TestPieMenuItem implements PieMenuItem {
 	URL mURL;
 	private Resources resources;
 	private UUID id;
+	private String code;
 	
 	public TestPieMenuItem() {
 		this.img = null;
 		this.title = "No title";
 		this.mURL = null;
 		this.id = null;
+		this.code = null;
 	}
 	
 	public void setImage(AnnotatedImage img) {
@@ -62,5 +64,13 @@ public class TestPieMenuItem implements PieMenuItem {
 	
 	public UUID getId() {
 		return this.id;
+	}
+	
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	public String getCode() {
+		return this.code;
 	}
 }

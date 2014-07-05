@@ -21,12 +21,15 @@ public class Category implements JSONParsableObject{
 	private int numberOfItems = 0; // this is the number of articles, will use it later for pagination
 	private String code = null;	
 	private String lang = null; // "he"/"en" - we would filter and keep Hebrew categories only
-
-	public Category(String name, int numberOfItems, String code, String lang) {
+	
+	private AnnotatedImage ai;
+	
+	public Category(String name, int numberOfItems, String code, String lang, AnnotatedImage ai) {
 		this.name = name;
 		this.numberOfItems = numberOfItems;
 		this.code = code;
 		this.lang = lang;
+		this.ai = ai;
 	}
 
 	public Category() {
@@ -87,5 +90,13 @@ public class Category implements JSONParsableObject{
 			categories.add(cat);
 		}
 		reader.endObject();		
+	}
+	
+	public AnnotatedImage getAi() {
+		return this.ai;
+	}
+	
+	public void setAi(AnnotatedImage ai) {
+		this.ai = ai;
 	}
 }

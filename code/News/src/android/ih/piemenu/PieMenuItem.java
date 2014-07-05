@@ -15,4 +15,6 @@ public interface PieMenuItem { // implemented by article & category
 //	boolean isClickable();
 	
 	UUID getId();
+	
+	String getCode();
 }

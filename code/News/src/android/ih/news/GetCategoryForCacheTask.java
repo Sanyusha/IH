@@ -1,14 +1,15 @@
 package android.ih.news;
 
 import android.ih.news.api.IHAPIWrapper;
+import android.ih.piemenu.PieMenuItem;
 import android.os.AsyncTask;
 
-public class GetCategoryForCacheTask extends AsyncTask<String, Void, Object> {
+public class GetCategoryForCacheTask extends AsyncTask<PieMenuItem, Void, Object> {
 	
     @Override
-    protected Object doInBackground(String... categories) {
+    protected Object doInBackground(PieMenuItem... categories) {
     	for (int i = 0; i < categories.length; i++) {
-    		IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(categories[i], 0, 20, false);
+    		IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(categories[i].getCode(), 0, 20, false);
 		}
     	return null;
     }

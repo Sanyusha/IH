@@ -15,13 +15,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import android.graphics.BitmapFactory;
+import android.ih.news.R;
 import android.ih.news.api.CacheList.FetchLimit;
+import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
 import android.ih.news.model.Category;
 import android.ih.news.model.Comment;
 import android.ih.news.model.HeadArticle;
 import android.ih.news.model.Newsflash;
 import android.ih.news.model.SubArticle;
+import android.ih.news.model.AnnotatedImage.ImageSize;
+import android.ih.piemenu.PieMenu;
+import android.ih.piemenu.TestPieMenuItem;
 import android.util.JsonReader;
 import android.util.Log;
 
@@ -107,11 +113,59 @@ public class IHAPIWrapper {
         try {
         	url = new URL(getBaseUrl() + "category" + addKey());
 
-			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
+			//JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
 				sleepIfNeededToSimulateNetworkTime();
-				Category.setCategoriesFromReader(reader, categories);
-
+				//Category.setCategoriesFromReader(reader, categories);
+				
+				TestPieMenuItem root = (TestPieMenuItem) PieMenu.getMenu().getRoot().getData();
+				Category nextCategory;
+				
+//				nextCategory = new Category("חדשות", 100, "12", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+//    					BitmapFactory.decodeResource(root.getResources(), R.drawable.globe), ImageSize.PIE));
+//				
+//				categories.add(nextCategory);
+				
+				nextCategory = new Category("דעות", 100, "columns", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+    					BitmapFactory.decodeResource(root.getResources(), R.drawable.thinker), ImageSize.PIE));
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("העולם", 100, "העולם", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+    					BitmapFactory.decodeResource(root.getResources(), R.drawable.globe), ImageSize.PIE));
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("ספורט", 100, "מונדיאל", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+    					BitmapFactory.decodeResource(root.getResources(), R.drawable.soccer), ImageSize.PIE));
+				categories.add(nextCategory);
+			
+				nextCategory = new Category("פלילים", 100, "Crime", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
+//				nextCategory = new Category("הורוסקופ", 100, "10009", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+//    					BitmapFactory.decodeResource(root.getResources(), R.drawable.horos), ImageSize.PIE));
+//				categories.add(nextCategory);
+				
+				nextCategory = new Category("ביטחוני", 100, "ביטחוני", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+    					BitmapFactory.decodeResource(root.getResources(), R.drawable.airplane), ImageSize.PIE));
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("תרבות", 100, "Culture", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+    					BitmapFactory.decodeResource(root.getResources(), R.drawable.culture), ImageSize.PIE));
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("כלכלה", 100, "Economy", Category.HEBREW_LANGUAGE, new AnnotatedImage("img1", "local", 
+    					BitmapFactory.decodeResource(root.getResources(), R.drawable.graph), ImageSize.PIE));
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("פוליטי", 100, "פוליטי", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("בארץ", 100, "בארץ", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("רכילות", 100, "Gossip", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
 				// filter non-hebrew categories
 //				Iterator<Category> iterator = categories.iterator();
 //				while (iterator.hasNext()) {
@@ -126,9 +180,9 @@ public class IHAPIWrapper {
 					categoryItemCount.put(category.getName(), category.getNumberOfItems());
 				}				
 			} finally {
-				if (reader != null) {
-					reader.close();
-				}
+//				if (reader != null) {
+//					reader.close();
+//				}
 			}
         } catch (Exception e) {
         	Log.e("REST", "Failed to get categories", e);
@@ -248,7 +302,14 @@ public class IHAPIWrapper {
 		
 		// now we can lock only our category
 		synchronized (categoryArticlesCache.get(category)) {
-			FetchLimit actualLimit = CacheList.getActualLimit(forceUpdate, categoryArticlesCache.get(category), startIndex, count, categoryItemCount.get(category));
+			FetchLimit actualLimit = null;
+			
+			try {
+				actualLimit = CacheList.getActualLimit(forceUpdate, categoryArticlesCache.get(category), startIndex, count, categoryItemCount.get(category));
+			} catch (Exception e) {
+				Log.d("IHAPI", "CacheList exception");
+			}
+			
 			
 			// need to fetch records
 			if (actualLimit.getLimit() > 0) {
@@ -271,7 +332,7 @@ public class IHAPIWrapper {
 		URL url = null;
 		BufferedReader in = null;
 		try {
-			url = new URL(getBaseUrl() + "content/article" + addKey() + "&category=" + category + "&offset=" + actualLimit.getStart() + "&limit=" + actualLimit.getLimit());
+			url = new URL(getBaseUrl() + "content/article" + addKey() + "&category=" + category + "&lang=he" + "&offset=" + actualLimit.getStart() + "&limit=" + actualLimit.getLimit());
 			Log.d("getCategoryArticles", "url:::" + url);
 			
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));

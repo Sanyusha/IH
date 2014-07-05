@@ -16,7 +16,7 @@ public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Articl
     @Override
     protected List<Article> doInBackground(ArticleAdapter... adapter) {
     	this.articleAdapt = adapter[0];
-    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(PieMenu.getSelectedCategory(), 0, 20, false);
+    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(PieMenu.getSelectedCategory().getCode(), 0, 20, false);
     }
 
     @Override

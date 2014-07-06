@@ -183,4 +183,9 @@ public abstract class Article implements Item, JSONParsableObject {
 		}
 		reader.endObject();
 	}
+	
+	@Override
+	public String toString() {
+		return this.getTitle();
+	}
 }

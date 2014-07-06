@@ -2,15 +2,18 @@ package android.ih.news;
 
 import java.util.UUID;
 
+import android.app.Dialog;
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.news.model.Article;
+import android.ih.piemenu.PieMenu;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
@@ -74,6 +77,36 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+	}
+	
+	public void showPieDialog() {
+		final Dialog dialog = new Dialog(getActivity(), R.style.full_screen_dialog);
+		WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
+		//WMLP.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+		//WMLP.gravity = Gravity.TOP | Gravity.LEFT;
+		//WMLP.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+		//WMLP.height += 50;
+		//WMLP.x = lastTouch.x;   //x position
+		//WMLP.y = lastTouch.y;   //y position
+		WMLP.alpha = ArticleListFragment.PIE_DIALOG_ALPHA;
+		//WMLP.width = WindowManager.LayoutParams.MATCH_PARENT;
+		//WMLP.height = WindowManager.LayoutParams.WRAP_CONTENT;
+		dialog.getWindow().setAttributes(WMLP);
+		//dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+		//		ViewGroup.LayoutParams.MATCH_PARENT);
+		dialog.setContentView(R.layout.pie_dlg);
+		
+		PieMenu pm = (PieMenu) dialog.findViewById(R.id.pieMenu);
+		pm.setDlg(dialog);
+//		
+//		pm.setOnLongClickListener(new OnLongClickListener() {
+//			public boolean onLongClick(View v) {
+//				Toast.makeText(dialog.getContext(), "Long click on pie", Toast.LENGTH_SHORT).show();
+//				return false;
+//			}
+//		});
+		
+		dialog.show();
 	}
 
 }

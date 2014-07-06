@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -50,7 +51,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	private static Point lastTouch;
 	//**************************** #1 added by lilach- end
 
-	private static final float PIE_DIALOG_ALPHA = (float) 0.85;
+	public static final float PIE_DIALOG_ALPHA = (float) 0.85;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -79,11 +80,8 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
 	
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    showPieDialog();
-	    
-	    return true;
-	}
+    
+	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -310,7 +308,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	}
 	//*********************************************** #4 added by lilach- end
 
-	private void showPieDialog() {
+	public void showPieDialog() {
 		pieDialog = new Dialog(getActivity(),
 				R.style.full_screen_dialog);
 		WindowManager.LayoutParams WMLP = pieDialog.getWindow()

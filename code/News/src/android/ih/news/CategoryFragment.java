@@ -324,7 +324,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 	}
 	//*********************************************** #4 added by lilach- end
 	
-	private void showPieDialog() {
+	public void showPieDialog() {
 		final Dialog dialog = new Dialog(getActivity(), R.style.full_screen_dialog);
 		WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
 		//WMLP.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;

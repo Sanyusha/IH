@@ -70,7 +70,11 @@ public class PieMenu extends View{
 	EmbossMaskFilter emboss;
 	EmbossMaskFilter forBig;
 
-
+	// The gesture threshold expressed in dip
+	private static final float categoryTextScale = 30.0f;
+	private static final float articleTextScale = 12.0f;
+	final float scale = getContext().getResources().getDisplayMetrics().density;
+	
 	private static BasicTree<PieMenuItem> menu = new BasicTree<PieMenuItem>(null);
 
 	private static int GENERAL_PADDING = 50;
@@ -211,18 +215,18 @@ public class PieMenu extends View{
 
 		categoryText = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 		categoryText.setColor(Color.WHITE); 
-		categoryText.setTextSize(60);
+		categoryText.setTextSize((categoryTextScale * scale));
 		categoryText.setTextAlign(Paint.Align.LEFT);
 		categoryText.setTypeface(Typeface.DEFAULT_BOLD);
 
 		articleTextPaint = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
 		articleTextPaint.setColor(Color.BLACK);
-		articleTextPaint.setTextSize(40);
+		articleTextPaint.setTextSize((articleTextScale * scale));
 		articleTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
 
 		arcText = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 		arcText.setColor(Color.BLACK); 
-		arcText.setTextSize(40);
+		arcText.setTextSize((articleTextScale * scale));
 		//arcText.setStyle(Paint.Style.FILL_AND_STROKE);
 		arcText.setTextAlign(Paint.Align.CENTER);
 
@@ -289,7 +293,11 @@ public class PieMenu extends View{
 	private void initValues() {
 		px = getMeasuredWidth() / 2;
 		py = getMeasuredHeight() / 2;
-
+		
+		if (py < px) {
+			px += (px / 2);
+		}
+		
 		BIG_CIRCLE_RADIUS = (Math.min(px, py) * 6) / 10;
 
 		MAIN_CIRCLE_RADIUS = BIG_CIRCLE_RADIUS / 5;
@@ -297,14 +305,26 @@ public class PieMenu extends View{
 		NEXT_LEVEL_RADIUS = BIG_CIRCLE_RADIUS  * 3 / 7;
 
 		categoryTextX = getMeasuredWidth();
-		categoryTextY = py + (BIG_CIRCLE_RADIUS * 5 / 3);
-
+		
+		if (py >= px) {
+			categoryTextY = py + (BIG_CIRCLE_RADIUS * 5 / 3);
+		} else {
+			categoryTextY = py + (BIG_CIRCLE_RADIUS * 4 / 3);
+		}
+		
 		articleRectX1 = GENERAL_PADDING;
 		articleRectY1 = getMeasuredWidth() * 5 / 100;
-		articleRectX2 = getMeasuredWidth() * 17 / 21;
-		articleRectY2 = py - (BIG_CIRCLE_RADIUS * 5 / 3);
+		
+		if (py >= px) {
+			articleRectX2 = getMeasuredWidth() * 17 / 21;
+			articleRectY2 = py - (BIG_CIRCLE_RADIUS * 5 / 3);
+		} else {
+			articleRectX2 = getMeasuredWidth() * 9 / 21;
+			articleRectY2 = py;
+		}	
 	}
-
+	
+	
 	private void drawFirstLevel(Canvas canvas) {
 		Bitmap bm;
 		Rect r;

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -77,7 +78,13 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 
 		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
-
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    showPieDialog();
+	    
+	    return true;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{

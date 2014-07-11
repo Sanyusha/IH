@@ -112,51 +112,51 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 	    //*************************************** #2 deleted by lilach - end
 	    
 	    //**************************************** #3 added by lilach- start 
-	    class touchList implements OnTouchListener
-		{
-			@Override
-			public boolean onTouch(View v, MotionEvent event) 
-			{
-				final int action = event.getAction();
-				switch (action & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN: {
-					lastTouch.x = (int) event.getX();
-					lastTouch.y = (int) event.getY();
-					Thread th = new Thread(new waitAndStartDialog());
-					th.start();
-					break;
-				}
-				case MotionEvent.ACTION_UP:
-					stillDown = false;
-				}
-				return true;
-			}
-		}
-		view.setOnTouchListener(new touchList());
+//	    class touchList implements OnTouchListener
+//		{
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) 
+//			{
+//				final int action = event.getAction();
+//				switch (action & MotionEvent.ACTION_MASK) {
+//				case MotionEvent.ACTION_DOWN: {
+//					lastTouch.x = (int) event.getX();
+//					lastTouch.y = (int) event.getY();
+//					Thread th = new Thread(new waitAndStartDialog());
+//					th.start();
+//					break;
+//				}
+//				case MotionEvent.ACTION_UP:
+//					stillDown = false;
+//				}
+//				return true;
+//			}
+//		}
+		//view.setOnTouchListener(new touchList());
 		ListView listView = (ListView)view.findViewById(android.R.id.list);
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-//				int[] location = new int[2];
-//				arg1.getLocationOnScreen(location);
-//				Dialog dialog = new Dialog(getActivity());
-//				WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
-//				WMLP.height += 50;
-//				WMLP.gravity = Gravity.TOP;// | Gravity.LEFT;
-//				WMLP.x = location[0];   //x position
-//				WMLP.y = location[1];   //y position
-//				dialog.getWindow().setAttributes(WMLP);
-//				dialog.setContentView(R.layout.pie_dlg);
-//				dialog.setTitle("yeyyyyyy!!!!!!!!");
-//				dialog.show();
-				
-				showPieDialog();
-				
-				return true;
-			}
-		});
+//		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+//					int arg2, long arg3) {
+////				int[] location = new int[2];
+////				arg1.getLocationOnScreen(location);
+////				Dialog dialog = new Dialog(getActivity());
+////				WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
+////				WMLP.height += 50;
+////				WMLP.gravity = Gravity.TOP;// | Gravity.LEFT;
+////				WMLP.x = location[0];   //x position
+////				WMLP.y = location[1];   //y position
+////				dialog.getWindow().setAttributes(WMLP);
+////				dialog.setContentView(R.layout.pie_dlg);
+////				dialog.setTitle("yeyyyyyy!!!!!!!!");
+////				dialog.show();
+//				
+//				showPieDialog();
+//				
+//				return true;
+//			}
+//		});
 		//****************************************** #3 added by lilach -end 
 		
 	    return view;

@@ -10,13 +10,14 @@ import android.util.Log;
 
 
 public class GetMainPageTask extends AsyncTask<ArticleAdapter, Void, List<Article>> {
-	
-	//TODO: add cache
 	ArticleAdapter articleAdapt = null;
 
     @Override
     protected List<Article> doInBackground(ArticleAdapter... adapter) {
-    	this.articleAdapt = adapter[0];
+    	if (adapter != null && adapter.length > 0) {
+    		this.articleAdapt = adapter[0];
+    	}
+    	
     	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles();
     }
 
@@ -25,7 +26,9 @@ public class GetMainPageTask extends AsyncTask<ArticleAdapter, Void, List<Articl
     	if(result == null){
     		Log.d("lilach", "result null");
     	}
-        articleAdapt.clear();
-        articleAdapt.addAll(result);
+    	if (articleAdapt != null) {
+    		articleAdapt.clear();
+    		articleAdapt.addAll(result);
+    	}
     }
 }

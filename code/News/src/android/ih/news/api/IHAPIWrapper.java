@@ -40,6 +40,7 @@ import android.util.Log;
  */
 public class IHAPIWrapper {
 
+	private static final String HOMEPAGE_CATEGORY = "main";
 	private String baseUrl;
 	private String key;
 	private ThreadPoolExecutor categoryArticleExecutor;
@@ -229,16 +230,33 @@ public class IHAPIWrapper {
 	 * @return the android home page.
 	 */
 	public List<Article> getMainPageArticles() {
+		// init cache
+		synchronized (categoryArticlesCache) {
+			if (!categoryArticlesCache.containsKey(HOMEPAGE_CATEGORY)) {
+				categoryArticlesCache.put(HOMEPAGE_CATEGORY, new ArrayList<Article>());
+			}
+		}
+		
+		// now we can lock only our category
+		synchronized (categoryArticlesCache.get(HOMEPAGE_CATEGORY)) {
+			if (categoryArticlesCache.get(HOMEPAGE_CATEGORY).size() == 0) {
+				actualGetHomePage();
+			}
+			
+			return categoryArticlesCache.get(HOMEPAGE_CATEGORY);
+		}
+	}
 
+	private void actualGetHomePage() {
 		List<HeadArticle> primery = new ArrayList<HeadArticle>(); // should be only one
 		List<SubArticle> secondery = new ArrayList<SubArticle>();
 		List<SubArticle> news = new ArrayList<SubArticle>();
 		List<SubArticle> other = new ArrayList<SubArticle>();
 		
 		URL url = null;
-        BufferedReader in = null;
-        try {
-        	url = new URL(getBaseUrl() + "homepage/android" + addKey());
+		BufferedReader in = null;
+		try {
+			url = new URL(getBaseUrl() + "homepage/android" + addKey());
 
 			JsonReader reader = new JsonReader(new InputStreamReader(url.openStream(), "UTF-8"));
 			try {
@@ -263,20 +281,21 @@ public class IHAPIWrapper {
 					reader.close();
 				}
 			}
-        } catch (Exception e) {
-        	Log.e("REST", "Failed to get main home page (or some part of it)", e);
-        } finally {
-        	closeQuietly(in);
-        }
-        
-        // final list
-        List<Article> articles = new ArrayList<Article>();
-        articles.addAll(primery);
-        articles.addAll(secondery);
-        articles.addAll(news);
-        articles.addAll(other);
-        addArticlesToCache(articles);
-		return articles;
+		} catch (Exception e) {
+			Log.e("REST", "Failed to get main home page (or some part of it)", e);
+		} finally {
+			closeQuietly(in);
+		}
+		
+		// final list
+		List<Article> articles = new ArrayList<Article>();
+		articles.addAll(primery);
+		articles.addAll(secondery);
+		articles.addAll(news);
+		articles.addAll(other);
+		addArticlesToCache(articles);
+		
+		categoryArticlesCache.put(HOMEPAGE_CATEGORY, articles);
 	}
 	
 	private void addArticlesToCache(List<Article> articles) {

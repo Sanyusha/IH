@@ -17,6 +17,9 @@ import android.ih.piemenu.TestPieMenuItem;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Layout;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,10 +41,14 @@ import android.widget.Toast;
 
 public class ArticleListFragment extends ListFragment implements OnLongClickListener {
 	private static final String TAG = "ArticleListFragment";
-
+	
+	TextView mTextView;
+	
 	private List<Article> mArticles = new ArrayList<Article>();
 	View view;
-
+	
+	private String sFlashNews;
+	
 	private GestureDetector gestureDetector;
 
 	//**************************** #1 added by lilach- start
@@ -107,41 +114,41 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		//*************************************** #2 deleted by lilach - end
 
 		//**************************************** #3 added by lilach- start 
-		class touchList implements OnTouchListener
-		{
-			@Override
-			public boolean onTouch(View v, MotionEvent event) 
-			{
-				if (pieDialog != null)
-				{
-					pieDialog.onTouchEvent(event);
-				}
-				final int action = event.getAction();
-				switch (action & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN: {
-					lastTouch.x = (int) event.getX();
-					lastTouch.y = (int) event.getY();
-					Thread th = new Thread(new waitAndStartDialog());
-					th.start();
-					break;
-				}
-				case MotionEvent.ACTION_UP:
-					stillDown = false;
-				}
-				return true;
-			}
-		}
-		view.setOnTouchListener(new touchList());
+//		class touchList implements OnTouchListener
+//		{
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) 
+//			{
+//				if (pieDialog != null)
+//				{
+//					pieDialog.onTouchEvent(event);
+//				}
+//				final int action = event.getAction();
+//				switch (action & MotionEvent.ACTION_MASK) {
+//				case MotionEvent.ACTION_DOWN: {
+//					lastTouch.x = (int) event.getX();
+//					lastTouch.y = (int) event.getY();
+//					Thread th = new Thread(new waitAndStartDialog());
+//					th.start();
+//					break;
+//				}
+//				case MotionEvent.ACTION_UP:
+//					stillDown = false;
+//				}
+//				return true;
+//			}
+//		}
+//		view.setOnTouchListener(new touchList());
 		ListView listView = (ListView)view.findViewById(android.R.id.list);
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				showPieDialog();
-				return true;
-			}
-		});
+//		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+//					int arg2, long arg3) {
+//				showPieDialog();
+//				return true;
+//			}
+//		});
 		//****************************************** #3 added by lilach -end 
 
 		return view;
@@ -150,35 +157,64 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	//added by lilach 21/6- start
 	public class setNewsFlashTask extends AsyncTask<String, Integer, String>
 	{
-
 		@Override
 		protected String doInBackground(String... params) {
 			String scrollingText = "";
 			List<Newsflash> newsflashList =  IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false)
 					.getAllNewsflash(10, 0);
 			for(Newsflash newsflash : newsflashList){
-				scrollingText = scrollingText.concat(" " +newsflash.getTitle());
+				scrollingText = scrollingText.concat("\n" +newsflash.getTitle());
+				//Log.d("setNewsFlashTask", "scrollingText:::" + scrollingText);
+				sFlashNews = scrollingText;
+				//mTextView.append(newsflash.getTitle() + "\n");
+				//appendTextAndScroll(newsflash.getTitle());
 			}
 			return scrollingText;
 		}
 
 	}
-
+	
+	private void appendTextAndScroll(String text)
+	{
+	    if(mTextView != null){
+	        mTextView.append(text + "\n");
+	        final Layout layout = mTextView.getLayout();
+	        //if(layout != null){
+	            //int scrollDelta = layout.getLineBottom(mTextView.getLineCount() - 1) 
+	             //   - mTextView.getScrollY() - mTextView.getHeight();
+	        int scrollDelta = 100;
+	            if(scrollDelta > 0)
+	                mTextView.scrollBy(0, 40);
+	            
+	        //}
+	    }
+	}
+	
 	private void setTicker() {
+		mTextView = (TextView) view.findViewById(R.id.scrollingTicker);
+		mTextView.setMovementMethod(new ScrollingMovementMethod());
+		//VerticalScrollTextView vs = (VerticalScrollTextView) view.findViewById(R.id.aaa);
+		//mTextView.setText(" aaa ");
+		
 		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
 		String scrollingText = "";
-		try {
-			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
-		tv.setText(scrollingText);
-		tv.setSelected(true);
+//		try {
+//			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		//TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
+		Log.d("setTicker", "scrollingText:::" + scrollingText);
+		//appendTextAndScroll(scrollingText);
+		//mTextView.setText(scrollingText);
+		
+		
+		//tv.setText(scrollingText);
+		//tv.setSelected(true);
 	}
 	//added by lilach 21/6- ends
 

@@ -3,6 +3,7 @@ package android.ih.news.splash;
 import android.app.Activity;
 import android.content.Intent;
 import android.ih.news.ArticleListActivity;
+import android.ih.news.GetMainPageTask;
 import android.ih.news.R;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,8 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        
+        new GetMainPageTask().execute();
         
         myHandler = new Handler();
         myHandler.postDelayed(myRun, SPLASH_TIME_OUT);

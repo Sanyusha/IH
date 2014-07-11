@@ -6,6 +6,7 @@ import android.ih.news.CategoryFragment.ArticleAdapter;
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.Article;
 import android.ih.piemenu.PieMenu;
+import android.ih.piemenu.PieMenuItem;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,7 +17,12 @@ public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Articl
     @Override
     protected List<Article> doInBackground(ArticleAdapter... adapter) {
     	this.articleAdapt = adapter[0];
-    	return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(PieMenu.getSelectedCategory().getCode(), 0, 20, false);
+    	PieMenuItem myCategory = PieMenu.getSelectedCategory();
+    	if (myCategory != null) {
+    		return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(myCategory.getCode(), 0, 20, false);
+    	}
+    	
+    	return null;
     }
 
     @Override

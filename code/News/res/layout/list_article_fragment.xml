@@ -11,24 +11,16 @@
         android:layout_height="80dp"
     />
     
+     
     <TextView
 	 android:id="@+id/scrollingTicker"
 	 android:layout_width="fill_parent"
 	 android:layout_height="wrap_content"
-	 android:singleLine="true"
-	 android:scrollHorizontally="true"
-	 android:ellipsize="marquee"
-	 android:marqueeRepeatLimit="marquee_forever"
-	 
-	 android:paddingTop="2dp"
-     android:paddingBottom="2dp"
-     android:paddingRight="10dp"
-     android:paddingLeft="10dp"
-     
-     android:textColor="@color/white"
-	 android:textStyle="normal"
-     android:textSize="14sp"
+android:gravity="bottom"
+android:scrollbars = "vertical"
+android:singleLine="true"
 	/>
+   
     
     <TextView 
    	 android:id="@+id/main_titleTextView"

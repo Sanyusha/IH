@@ -10,5 +10,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/welcome_screen" />
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:text="@string/skip" />
  
 </RelativeLayout>

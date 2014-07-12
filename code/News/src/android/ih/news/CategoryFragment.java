@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Point; //********************************* #0 added by lilach
 import android.ih.news.ArticleListFragment.ArticleAdapter;
-import android.ih.news.setNewsFlashTask;
+import android.ih.news.SetNewsFlashTask;
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
@@ -175,7 +175,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 	private void setTicker() {
 		mTextView = (TextView) view.findViewById(R.id.scrollingTicker);
 		
-		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
+		AsyncTask<String, Integer, String> setTask = new SetNewsFlashTask().execute();
 		String scrollingText = "";
 		try {
 			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI

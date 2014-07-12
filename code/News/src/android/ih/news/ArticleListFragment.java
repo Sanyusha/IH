@@ -44,7 +44,7 @@ import android.widget.Toast;
 
 public class ArticleListFragment extends ListFragment implements OnLongClickListener {
 	private static final String TAG = "ArticleListFragment";
-	
+
 	TextView mTextView;
 	HorizontalScrollView hScroll;
 	Handler hHandler;
@@ -192,6 +192,13 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	//		startActivity(i);
 	//		
 	//	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		//savedInstanceState.putParcelableArrayList(KEY_ARTICLES, mArticles);
+	}
+
 
 	public class ArticleAdapter extends ArrayAdapter<Article>{
 		private static final int TYPE_ITEM = 0;

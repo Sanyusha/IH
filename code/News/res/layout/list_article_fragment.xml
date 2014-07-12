@@ -11,17 +11,21 @@
         android:layout_height="80dp"
     />
     
-     
-    <TextView
-	 android:id="@+id/scrollingTicker"
-	 android:layout_width="fill_parent"
-	 android:layout_height="wrap_content"
-android:gravity="bottom"
-android:scrollbars = "vertical"
-android:singleLine="true"
-	/>
-   
+  <View
+    android:layout_width="fill_parent"
+    android:layout_height="1px"
+    android:background="@color/gray"/>
+  
+	    <android.ih.customviews.ScrollingTextView
+	    android:id="@+id/scrollingTicker" 
+	    android:layout_width="fill_parent"
+	    android:layout_height="40dp"
+	    android:padding="5dp"
+	    android:textColor="@color/gray"
+	    />
     
+	    
+	    
     <TextView 
    	 android:id="@+id/main_titleTextView"
      android:layout_width="match_parent"

@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Point; //********************************* #0 added by lilach
 import android.ih.news.ArticleListFragment.ArticleAdapter;
-import android.ih.news.ArticleListFragment.setNewsFlashTask;
+import android.ih.news.setNewsFlashTask;
 import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
@@ -53,6 +53,8 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 	//**************************** #1 added by lilach- end
 	
 	private static final float PIE_DIALOG_ALPHA = (float) 0.85;
+	
+	TextView mTextView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -169,24 +171,10 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 
 		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
-	
-	public class setNewsFlashTask extends AsyncTask<String, Integer, String>
-	{
-
-		@Override
-		protected String doInBackground(String... params) {
-			String scrollingText = "";
-			List<Newsflash> newsflashList =  IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false)
-					.getAllNewsflash(10, 0);
-			for(Newsflash newsflash : newsflashList){
-				scrollingText = scrollingText.concat(" " +newsflash.getTitle());
-			}
-			return scrollingText;
-		}
-
-	}
 
 	private void setTicker() {
+		mTextView = (TextView) view.findViewById(R.id.scrollingTicker);
+		
 		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
 		String scrollingText = "";
 		try {
@@ -198,9 +186,8 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
-		tv.setText(scrollingText);
-		tv.setSelected(true);
+		
+		mTextView.setText(scrollingText);
 	}
 //	@Override
 //	public void onListItemClick(ListView l, View v, int position, long id){

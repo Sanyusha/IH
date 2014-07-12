@@ -16,6 +16,8 @@ import android.ih.piemenu.PieMenu;
 import android.ih.piemenu.TestPieMenuItem;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ListFragment;
 import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
@@ -33,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,9 +46,12 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	private static final String TAG = "ArticleListFragment";
 	
 	TextView mTextView;
+	HorizontalScrollView hScroll;
+	Handler hHandler;
 	
 	private List<Article> mArticles = new ArrayList<Article>();
 	View view;
+	int scroll_pos;
 	
 	private String sFlashNews;
 	
@@ -153,69 +159,26 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 
 		return view;
 	}
-
-	//added by lilach 21/6- start
-	public class setNewsFlashTask extends AsyncTask<String, Integer, String>
-	{
-		@Override
-		protected String doInBackground(String... params) {
-			String scrollingText = "";
-			List<Newsflash> newsflashList =  IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false)
-					.getAllNewsflash(10, 0);
-			for(Newsflash newsflash : newsflashList){
-				scrollingText = scrollingText.concat("\n" +newsflash.getTitle());
-				//Log.d("setNewsFlashTask", "scrollingText:::" + scrollingText);
-				sFlashNews = scrollingText;
-				//mTextView.append(newsflash.getTitle() + "\n");
-				//appendTextAndScroll(newsflash.getTitle());
-			}
-			return scrollingText;
-		}
-
-	}
-	
-	private void appendTextAndScroll(String text)
-	{
-	    if(mTextView != null){
-	        mTextView.append(text + "\n");
-	        final Layout layout = mTextView.getLayout();
-	        //if(layout != null){
-	            //int scrollDelta = layout.getLineBottom(mTextView.getLineCount() - 1) 
-	             //   - mTextView.getScrollY() - mTextView.getHeight();
-	        int scrollDelta = 100;
-	            if(scrollDelta > 0)
-	                mTextView.scrollBy(0, 40);
-	            
-	        //}
-	    }
-	}
 	
 	private void setTicker() {
 		mTextView = (TextView) view.findViewById(R.id.scrollingTicker);
-		mTextView.setMovementMethod(new ScrollingMovementMethod());
-		//VerticalScrollTextView vs = (VerticalScrollTextView) view.findViewById(R.id.aaa);
-		//mTextView.setText(" aaa ");
 		
 		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
 		String scrollingText = "";
-//		try {
-//			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		//TextView tv = (TextView) view.findViewById(R.id.scrollingTicker);
-		Log.d("setTicker", "scrollingText:::" + scrollingText);
-		//appendTextAndScroll(scrollingText);
-		//mTextView.setText(scrollingText);
+		try {
+			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		//tv.setText(scrollingText);
-		//tv.setSelected(true);
+		mTextView.setText(scrollingText);
 	}
+	
+	
 	//added by lilach 21/6- ends
 
 

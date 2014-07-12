@@ -11,24 +11,18 @@
         android:layout_height="80dp"
     />
     
-    <TextView
-	 android:id="@+id/scrollingTicker"
-	 android:layout_width="fill_parent"
-	 android:layout_height="wrap_content"
-	 android:singleLine="true"
-	 android:scrollHorizontally="true"
-	 android:ellipsize="marquee"
-	 android:marqueeRepeatLimit="marquee_forever"
-	 android:visibility="visible"
-	 android:paddingTop="2dp"
-     android:paddingBottom="2dp"
-     android:paddingRight="10dp"
-     android:paddingLeft="10dp"
-     
-     android:textColor="@color/white"
-	 android:textStyle="normal"
-     android:textSize="14sp"
-	/>
+    <View
+    android:layout_width="fill_parent"
+    android:layout_height="1px"
+    android:background="@color/gray"/>
+  
+	    <android.ih.customviews.ScrollingTextView
+	    android:id="@+id/scrollingTicker" 
+	    android:layout_width="fill_parent"
+	    android:layout_height="40dp"
+	    android:padding="5dp"
+	    android:textColor="@color/gray"
+	    />
     
     <TextView 
    	 android:id="@+id/category_titleTextView"

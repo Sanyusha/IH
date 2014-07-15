@@ -120,6 +120,21 @@ public abstract class Article implements Item, JSONParsableObject {
 				readArticleImages(reader);
 			} else if (name.equals("author")) {
 				readArticleAuthor(reader);
+			} else if (name.equals("date")) {
+				readArticleDate(reader);
+			} else {
+				reader.skipValue();
+			}
+		}
+		reader.endObject();
+	}
+
+	private void readArticleDate(JsonReader reader) throws IOException {
+		reader.beginObject();
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			if (name.equals("timestamp")) {
+				this.setDate(new Date(reader.nextLong() * 1000));
 			} else {
 				reader.skipValue();
 			}

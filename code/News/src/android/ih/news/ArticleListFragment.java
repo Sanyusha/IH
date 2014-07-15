@@ -77,12 +77,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		setListAdapter(adapter);
 		new GetMainPageTask().execute(adapter);
 		pieDialog = null;
-		TestPieMenuItem root = new TestPieMenuItem();
-		root.setResources(getResources());
-		root.setImage(new AnnotatedImage("img1", "local", 
-				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), ImageSize.PIE));
-		PieMenu.getMenu().getRoot().setData(root);
-		new SetTreeCategoriesTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), PieMenu.getMenu());
 	}
 
 	public void onListItemClick(ListView l, View v, int position, long id){
@@ -163,7 +157,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	private void setTicker() {
 		mTextView = (TextView) view.findViewById(R.id.scrollingTicker);
 		
-		AsyncTask<String, Integer, String> setTask = new setNewsFlashTask().execute();
+		AsyncTask<String, Integer, String> setTask = new SetNewsFlashTask().execute();
 		String scrollingText = "";
 		try {
 			scrollingText = setTask.get(); // TODO: this is waiting until the task is completed and blocks the UI

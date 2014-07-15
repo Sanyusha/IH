@@ -41,6 +41,7 @@ import android.util.Log;
 public class IHAPIWrapper {
 
 	private static final String HOMEPAGE_CATEGORY = "main";
+	private static final String NEWSFLASH_CATEGORY = "newsflash";
 	private String baseUrl;
 	private String key;
 	private ThreadPoolExecutor categoryArticleExecutor;
@@ -163,10 +164,22 @@ public class IHAPIWrapper {
 				nextCategory = new Category("פוליטי", 100, "%D7%A4%D7%95%D7%9C%D7%99%D7%98%D7%99", Category.HEBREW_LANGUAGE, null);
 				categories.add(nextCategory);
 				
+				nextCategory = new Category("רכילות", 100, "Gossip", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("בריאות", 100, "%D7%91%D7%A8%D7%99%D7%90%D7%95%D7%AA", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("טיולים", 100, "%D7%98%D7%99%D7%95%D7%9C%D7%99%D7%9D", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
 				nextCategory = new Category("בארץ", 100, "%D7%91%D7%90%D7%A8%D7%A5", Category.HEBREW_LANGUAGE, null);
 				categories.add(nextCategory);
 				
-				nextCategory = new Category("רכילות", 100, "Gossip", Category.HEBREW_LANGUAGE, null);
+				nextCategory = new Category("אוכל", 100, "%D7%90%D7%95%D7%9B%D7%9C", Category.HEBREW_LANGUAGE, null);
+				categories.add(nextCategory);
+				
+				nextCategory = new Category("כנסת", 100, "%D7%9B%D7%A0%D7%A1%D7%AA", Category.HEBREW_LANGUAGE, null);
 				categories.add(nextCategory);
 				
 				// filter non-hebrew categories
@@ -201,9 +214,27 @@ public class IHAPIWrapper {
 	 * @param limit how many items to fetch
 	 * @param pagination where to start
 	 */
-	public List<Newsflash> getAllNewsflash(int limit, int pagination) {
+	public List<Article> getAllNewsflash(int limit, int pagination) {
 		
-		List<Newsflash> newsflash = new ArrayList<Newsflash>();
+		// init cache
+		synchronized (categoryArticlesCache) {
+			if (!categoryArticlesCache.containsKey(NEWSFLASH_CATEGORY)) {
+				categoryArticlesCache.put(NEWSFLASH_CATEGORY, new ArrayList<Article>());
+			}
+		}
+		
+		// now we can lock only our category
+		synchronized (categoryArticlesCache.get(NEWSFLASH_CATEGORY)) {
+			if (categoryArticlesCache.get(NEWSFLASH_CATEGORY).size() == 0) {
+				actualGetNewsFlash(limit, pagination);
+			}
+			
+			return categoryArticlesCache.get(NEWSFLASH_CATEGORY);
+		}
+	}
+	
+	private void actualGetNewsFlash(int limit, int pagination) {
+		List<Article> newsflash = new ArrayList<Article>();
 		URL url = null;
         BufferedReader in = null;
         try {
@@ -223,9 +254,10 @@ public class IHAPIWrapper {
         	closeQuietly(in);
         }
 
-		return newsflash;
+        categoryArticlesCache.put(NEWSFLASH_CATEGORY, newsflash);
+
 	}
-	
+
 	/**
 	 * @return the android home page.
 	 */

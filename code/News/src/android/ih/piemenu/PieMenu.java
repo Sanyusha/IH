@@ -114,8 +114,8 @@ public class PieMenu extends View{
 
 	private int level1FirstNode = 0, level1NodeCount;
 
-	private double ARC_TEXT_PARAM = 0.9;
-	private MotionEvent ev;
+	//private double ARC_TEXT_PARAM = 0.9;
+	//private MotionEvent ev;
 
 	public PieMenu(Context context, AttributeSet attri)
 	{
@@ -151,10 +151,10 @@ public class PieMenu extends View{
 		motionEvent.recycle();
 	}
 
-	public void setEv(MotionEvent ev) {
-		this.ev = ev;
-		this.onTouchEvent(ev);
-	}
+//	public void setEv(MotionEvent ev) {
+//		this.ev = ev;
+//		this.onTouchEvent(ev);
+//	}
 
 	private void initPie()
 	{

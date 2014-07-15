@@ -5,27 +5,15 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Dialog;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.ih.news.api.IHAPIWrapper;
-import android.ih.news.model.AnnotatedImage;
-import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.news.model.Article;
-import android.ih.news.model.Newsflash;
 import android.ih.piemenu.PieMenu;
-import android.ih.piemenu.TestPieMenuItem;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.ListFragment;
-import android.text.Layout;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -43,7 +31,7 @@ import android.widget.Toast;
 //********************************* #0 added by lilach
 
 public class ArticleListFragment extends ListFragment implements OnLongClickListener {
-	private static final String TAG = "ArticleListFragment";
+	//private static final String TAG = "ArticleListFragment";
 
 	TextView mTextView;
 	HorizontalScrollView hScroll;
@@ -53,9 +41,9 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 	View view;
 	int scroll_pos;
 	
-	private String sFlashNews;
+	//private String sFlashNews;
 	
-	private GestureDetector gestureDetector;
+	//private GestureDetector gestureDetector;
 
 	//**************************** #1 added by lilach- start
 	boolean stillDown;
@@ -100,7 +88,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 
 		setTicker();
 
-		gestureDetector = new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
+		/*gestureDetector = */new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
 
 
 		//*************************************** #2 deleted by lilach - start
@@ -114,41 +102,41 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		//*************************************** #2 deleted by lilach - end
 
 		//**************************************** #3 added by lilach- start 
-//		class touchList implements OnTouchListener
-//		{
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) 
-//			{
-//				if (pieDialog != null)
-//				{
-//					pieDialog.onTouchEvent(event);
-//				}
-//				final int action = event.getAction();
-//				switch (action & MotionEvent.ACTION_MASK) {
-//				case MotionEvent.ACTION_DOWN: {
-//					lastTouch.x = (int) event.getX();
-//					lastTouch.y = (int) event.getY();
-//					Thread th = new Thread(new waitAndStartDialog());
-//					th.start();
-//					break;
-//				}
-//				case MotionEvent.ACTION_UP:
-//					stillDown = false;
-//				}
-//				return true;
-//			}
-//		}
-//		view.setOnTouchListener(new touchList());
+		class touchList implements OnTouchListener
+		{
+			@Override
+			public boolean onTouch(View v, MotionEvent event) 
+			{
+				if (pieDialog != null)
+				{
+					pieDialog.onTouchEvent(event);
+				}
+				final int action = event.getAction();
+				switch (action & MotionEvent.ACTION_MASK) {
+				case MotionEvent.ACTION_DOWN: {
+					lastTouch.x = (int) event.getX();
+					lastTouch.y = (int) event.getY();
+					Thread th = new Thread(new waitAndStartDialog());
+					th.start();
+					break;
+				}
+				case MotionEvent.ACTION_UP:
+					stillDown = false;
+				}
+				return true;
+			}
+		}
+		view.setOnTouchListener(new touchList());
 		ListView listView = (ListView)view.findViewById(android.R.id.list);
-//		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-//
-//			@Override
-//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-//					int arg2, long arg3) {
-//				showPieDialog();
-//				return true;
-//			}
-//		});
+		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				showPieDialog();
+				return true;
+			}
+		});
 		//****************************************** #3 added by lilach -end 
 
 		return view;

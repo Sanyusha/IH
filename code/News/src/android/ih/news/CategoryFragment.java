@@ -5,32 +5,23 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import android.app.Dialog;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Point; //********************************* #0 added by lilach
-import android.ih.news.ArticleListFragment.ArticleAdapter;
-import android.ih.news.SetNewsFlashTask;
+import android.graphics.Point;
 import android.ih.news.api.IHAPIWrapper;
-import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Article;
-import android.ih.news.model.Newsflash;
-import android.ih.piemenu.BasicTree;
 import android.ih.piemenu.PieMenu;
-import android.ih.piemenu.PieMenuItem;
-import android.ih.piemenu.TestPieMenuItem;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
@@ -38,15 +29,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+//********************************* #0 added by lilach
 
-public class CategoryFragment extends ListFragment implements OnLongClickListener {
-	private static final String TAG = "ArticleListFragment";
+public class CategoryFragment extends ListFragment implements OnLongClickListener, OnScrollListener {
+	//private static final String TAG = "ArticleListFragment";
 
 	private List<Article> mArticles = new ArrayList<Article>();
 	View view;
 	
-	private GestureDetector gestureDetector;
+	//private GestureDetector gestureDetector;
 	
+	private ArticleAdapter adapter;
 	//**************************** #1 added by lilach- start
 	boolean stillDown;
 	private static Point lastTouch;
@@ -63,7 +56,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		//mArticles = ArticleLab.get(getActivity()).getArticles();
 //		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
 		lastTouch = new Point(); //added by lilach
-		ArticleAdapter adapter = new ArticleAdapter(mArticles);
+		adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
 		new GetCategoryTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), adapter);
 		//TestPieMenuItem root = new TestPieMenuItem();
@@ -100,8 +93,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 //	        }
 //	    });
 	    
-	    gestureDetector = new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
-	    
+	    /*gestureDetector = */new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
 	    
 	    //*************************************** #2 deleted by lilach - start
 //	    // using TouchListener provides us coordinates of press
@@ -114,51 +106,39 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 	    //*************************************** #2 deleted by lilach - end
 	    
 	    //**************************************** #3 added by lilach- start 
-//	    class touchList implements OnTouchListener
-//		{
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) 
-//			{
-//				final int action = event.getAction();
-//				switch (action & MotionEvent.ACTION_MASK) {
-//				case MotionEvent.ACTION_DOWN: {
-//					lastTouch.x = (int) event.getX();
-//					lastTouch.y = (int) event.getY();
-//					Thread th = new Thread(new waitAndStartDialog());
-//					th.start();
-//					break;
-//				}
-//				case MotionEvent.ACTION_UP:
-//					stillDown = false;
-//				}
-//				return true;
-//			}
-//		}
-		//view.setOnTouchListener(new touchList());
+	    class touchList implements OnTouchListener
+		{
+			@Override
+			public boolean onTouch(View v, MotionEvent event) 
+			{
+				final int action = event.getAction();
+				switch (action & MotionEvent.ACTION_MASK) {
+				case MotionEvent.ACTION_DOWN: {
+					lastTouch.x = (int) event.getX();
+					lastTouch.y = (int) event.getY();
+					Thread th = new Thread(new waitAndStartDialog());
+					th.start();
+					break;
+				}
+				case MotionEvent.ACTION_UP:
+					stillDown = false;
+				}
+				return true;
+			}
+		}
+		view.setOnTouchListener(new touchList());
 		ListView listView = (ListView)view.findViewById(android.R.id.list);
-//		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-//
-//			@Override
-//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-//					int arg2, long arg3) {
-////				int[] location = new int[2];
-////				arg1.getLocationOnScreen(location);
-////				Dialog dialog = new Dialog(getActivity());
-////				WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
-////				WMLP.height += 50;
-////				WMLP.gravity = Gravity.TOP;// | Gravity.LEFT;
-////				WMLP.x = location[0];   //x position
-////				WMLP.y = location[1];   //y position
-////				dialog.getWindow().setAttributes(WMLP);
-////				dialog.setContentView(R.layout.pie_dlg);
-////				dialog.setTitle("yeyyyyyy!!!!!!!!");
-////				dialog.show();
-//				
-//				showPieDialog();
-//				
-//				return true;
-//			}
-//		});
+		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				
+				showPieDialog();
+				
+				return true;
+			}
+		});
 		//****************************************** #3 added by lilach -end 
 		
 	    return view;
@@ -170,6 +150,14 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		a = ((ArticleAdapter)getListAdapter()).getItem(position);
 
 		StartActivity.startArticleActivity(getActivity(), a.getId());
+	}
+
+	
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+	    getListView().setOnScrollListener(this);
 	}
 
 	private void setTicker() {
@@ -339,5 +327,20 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 //		});
 		
 		dialog.show();
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		if (totalItemCount > 0 && !GetCategoryTask.updateInProgress && firstVisibleItem+visibleItemCount > totalItemCount - 2)
+		{
+			new GetCategoryTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), adapter);
+		}
 	}
 }

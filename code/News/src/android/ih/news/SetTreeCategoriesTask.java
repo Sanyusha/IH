@@ -2,17 +2,13 @@ package android.ih.news;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.ih.news.api.IHAPIWrapper;
-import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.Category;
-import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.piemenu.BasicTree;
-import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.BasicTree.Node;
+import android.ih.piemenu.PieMenuItem;
 import android.ih.piemenu.TestPieMenuItem;
 import android.os.AsyncTask;
 import android.util.Log;

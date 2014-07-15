@@ -1,8 +1,5 @@
 package android.ih.news.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.view.LayoutInflater;
 import android.view.View;
 

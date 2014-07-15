@@ -13,13 +13,16 @@ import android.util.Log;
 public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Article>> {
 	
 	ArticleAdapter articleAdapt = null;
-
+	public static boolean updateInProgress;
     @Override
     protected List<Article> doInBackground(ArticleAdapter... adapter) {
     	this.articleAdapt = adapter[0];
+    	int startingIndexToGet = (articleAdapt.getCount() == 0) ? 0 : articleAdapt.getCount();
+    	int countToGet = (articleAdapt.getCount() == 0) ? 20 : 10;
     	PieMenuItem myCategory = PieMenu.getSelectedCategory();
     	if (myCategory != null) {
-    		return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(myCategory.getCode(), 0, 20, false);
+    		updateInProgress = true;
+    		return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(myCategory.getCode(), startingIndexToGet, countToGet, false);
     	}
     	
     	return null;
@@ -30,7 +33,8 @@ public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Articl
     	if(result == null){
     		Log.d("lilach", "result null");
     	}
-        articleAdapt.clear();
+        //articleAdapt.clear();
         articleAdapt.addAll(result);
+        updateInProgress = false;
     }
 }

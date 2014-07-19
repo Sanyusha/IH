@@ -298,9 +298,9 @@ public class PieMenu extends View{
 			px += (px / 2);
 		}
 		
-		BIG_CIRCLE_RADIUS = (Math.min(px, py) * 6) / 10;
+		BIG_CIRCLE_RADIUS = (Math.min(px, py) * 7) / 10;
 
-		MAIN_CIRCLE_RADIUS = BIG_CIRCLE_RADIUS / 5;
+		MAIN_CIRCLE_RADIUS = BIG_CIRCLE_RADIUS / 3;
 
 		NEXT_LEVEL_RADIUS = BIG_CIRCLE_RADIUS  * 3 / 7;
 

@@ -28,6 +28,9 @@
             </intent-filter>
         </activity>
         
+        <activity android:name="android.ih.help.HelpFragmentActivity">
+        </activity>
+        
         <!-- Main activity -->
         <activity android:name=".ArticleListActivity">
         </activity>

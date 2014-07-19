@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import android.app.Dialog;
 import android.graphics.Point;
+import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.Article;
 import android.ih.piemenu.PieMenu;
 import android.os.AsyncTask;
@@ -62,6 +63,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		//		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
 		lastTouch = new Point(); //added by lilach
 		ArticleAdapter adapter = new ArticleAdapter(mArticles);
+		//ArticleAdapter adapter = new ArticleAdapter(IHAPIWrapper.categoryArticlesCache.get(IHAPIWrapper.HOMEPAGE_CATEGORY));
 		setListAdapter(adapter);
 		new GetMainPageTask().execute(adapter);
 		pieDialog = null;
@@ -75,9 +77,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
 	
-    
-	
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -87,19 +86,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		logoImage.setImageResource(R.drawable.black_logo);
 
 		setTicker();
-
-		/*gestureDetector = */new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
-
-
-		//*************************************** #2 deleted by lilach - start
-		//	    // using TouchListener provides us coordinates of press
-		//	    view.setOnTouchListener(new View.OnTouchListener() {
-		//            public boolean onTouch(View v, MotionEvent event) {
-		//            	gestureDetector.onTouchEvent(event);
-		//                return true;
-		//            }
-		//	    });
-		//*************************************** #2 deleted by lilach - end
 
 		//**************************************** #3 added by lilach- start 
 		class touchList implements OnTouchListener
@@ -159,21 +145,6 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		
 		mTextView.setText(scrollingText);
 	}
-	
-	
-	//added by lilach 21/6- ends
-
-
-	//	@Override
-	//	public void onListItemClick(ListView l, View v, int position, long id){
-	//		Article a = ((ArticleAdapter)getListAdapter()).getItem(position);
-	//		Log.d(TAG, a.getTitle() + " was clicked" );
-	//		
-	//		Intent i = new Intent(getActivity(), ArticlePagerActivity.class);
-	//		i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
-	//		startActivity(i);
-	//		
-	//	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -233,6 +204,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 
 			if (mArticles.get(position).getImages() != null && mArticles.get(position).getImages().size() > 0) {
 				holder.articleImageView.setTag(mArticles.get(position).getImages().get(0).getProperURL());
+				//holder.articleImageView.setTag(mArticles.get(position).getImages().get(0).getImage());
 				new DownloadImagesTask().execute(holder.articleImageView);
 			}
 

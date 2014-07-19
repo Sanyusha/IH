@@ -7,4 +7,13 @@
     <string name="articles_title">Articles</string>
     <string name="main_title">ראשי</string>
     <string name="skip">דלג</string>
+    
+    <string name="loading">בטעינה...</string>
+    
+    <string name="showAgain">אל תראה את זה בפעם הבאה</string>
+    <string name="runApp">עבור לאפליקציה</string>
+    
+    <string name="next_page">החלק ימינה שמאלה כדי לקרוא הת הוראות השימוש באפליקציה</string>
+    
+    <string name="help_1">לחצו על מקש התפריט כדי להציג את הקטגוריות</string>
 </resources>

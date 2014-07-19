@@ -3,5 +3,8 @@
     <color name="red_1">#b10009</color> 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="gray">#9f9f9f</color>  
+    <color name="gray">#9f9f9f</color>
+    
+    <color name="start_black_gradient">#080808</color>
+    <color name="end_black_gradient">#454545</color>
 </resources>

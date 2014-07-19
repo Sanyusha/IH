@@ -32,10 +32,10 @@
         <activity android:name=".ArticleListActivity" android:configChanges="orientation|screenSize">
         </activity>
         
-        <activity android:name=".CategoryListActivity">
+        <activity android:name=".CategoryListActivity" android:configChanges="orientation|screenSize">
         </activity>
         
-        <activity android:name=".ArticlePagerActivity">
+        <activity android:name=".ArticlePagerActivity" android:configChanges="orientation|screenSize">
         </activity>
     </application>
 

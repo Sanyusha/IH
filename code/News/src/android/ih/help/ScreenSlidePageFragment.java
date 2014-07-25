@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ScreenSlidePageFragment extends Fragment {
 	
@@ -34,13 +35,21 @@ public class ScreenSlidePageFragment extends Fragment {
                 R.layout.fragment_screen_slide_page, container, false);
         
         ImageView iv = (ImageView) rootView.findViewById(R.id.imgBG);
+        TextView tv = (TextView) rootView.findViewById(R.id.textView2);
         
         switch (pos) {
-		case 1:
-			iv.setImageResource(R.drawable.help_page1);
-			
+		case 0:
+			iv.setImageResource(R.drawable.help_page3);
+			tv.setText(R.string.help_3);
 			break;
-
+		case 1:
+			iv.setImageResource(R.drawable.help_page2);
+			tv.setText(R.string.help_2);
+			break;
+		case 2:
+			iv.setImageResource(R.drawable.help_page1);
+			tv.setText(R.string.help_1);
+			break;
 		default:
 			break;
 		}

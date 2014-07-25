@@ -66,6 +66,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		//ArticleAdapter adapter = new ArticleAdapter(IHAPIWrapper.categoryArticlesCache.get(IHAPIWrapper.HOMEPAGE_CATEGORY));
 		setListAdapter(adapter);
 		new GetMainPageTask().execute(adapter);
+		new SetTreeCategoriesTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), PieMenu.getMenu());
 		pieDialog = null;
 	}
 
@@ -205,6 +206,7 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 			if (mArticles.get(position).getImages() != null && mArticles.get(position).getImages().size() > 0) {
 				holder.articleImageView.setTag(mArticles.get(position).getImages().get(0).getProperURL());
 				//holder.articleImageView.setTag(mArticles.get(position).getImages().get(0).getImage());
+				holder.articleImageView.setImageResource(R.drawable.img_loading);
 				new DownloadImagesTask().execute(holder.articleImageView);
 			}
 

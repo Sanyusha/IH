@@ -57,6 +57,7 @@
         android:paddingTop="5dp"
         android:paddingRight="0dp"
         android:paddingBottom="5dp"
+        android:src="@drawable/img_loading"
     />
     </LinearLayout>
     

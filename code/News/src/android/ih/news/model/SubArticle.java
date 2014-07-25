@@ -31,6 +31,7 @@ public class SubArticle extends Article {
 			
 			if (this.getImages() != null && this.getImages().size() > 0) {
 				articleImageView.setTag(this.getImages().get(0).getProperURL());
+				articleImageView.setImageResource(R.drawable.img_loading);
 				new DownloadImagesTask().execute(articleImageView);
 			}
 			

@@ -4,6 +4,8 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="gray">#9f9f9f</color>
+    <color name="blue">#000080</color>
+    <color name="green">#006400</color>
     
     <color name="start_black_gradient">#080808</color>
     <color name="end_black_gradient">#454545</color>

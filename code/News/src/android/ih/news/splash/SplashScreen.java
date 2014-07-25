@@ -7,11 +7,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.ih.help.HelpFragmentActivity;
-import android.ih.news.ArticleListActivity;
 import android.ih.news.ArticleListFragment.ArticleAdapter;
 import android.ih.news.GetMainPageTask;
 import android.ih.news.R;
 import android.ih.news.SetNewsFlashTask;
+import android.ih.news.SetTreeCategoriesTask;
+import android.ih.news.api.IHAPIWrapper;
 import android.ih.news.model.AnnotatedImage;
 import android.ih.news.model.AnnotatedImage.ImageSize;
 import android.ih.news.model.Article;
@@ -60,7 +61,7 @@ public class SplashScreen extends Activity {
 		root.setImage(new AnnotatedImage("img1", "local", 
 				BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), ImageSize.PIE));
 		PieMenu.getMenu().getRoot().setData(root);
-		//new SetTreeCategoriesTask().executeOnExecutor(IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticleExecutor(), PieMenu.getMenu());
+		
         
         myHandler = new Handler();
         myHandler.postDelayed(myRun, SPLASH_TIME_OUT);

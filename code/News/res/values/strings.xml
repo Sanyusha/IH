@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">News</string>
+    <string name="app_name">ישראל היום</string>
     <string name="crime_title_hint">Title:</string>
     <string name="action_settings">Settings</string>
     <string name="stam_title">Stam</string>
@@ -11,9 +11,13 @@
     <string name="loading">בטעינה...</string>
     
     <string name="showAgain">אל תראה את זה בפעם הבאה</string>
-    <string name="runApp">עבור לאפליקציה</string>
+    <string name="runApp">דלג על ההוראות ועבור לאפליקציה</string>
     
-    <string name="next_page">החלק ימינה שמאלה כדי לקרוא הת הוראות השימוש באפליקציה</string>
+    <string name="next_page">החלק ימינה ושמאלה כדי לקרוא את הוראות השימוש באפליקציה</string>
     
-    <string name="help_1">לחצו על מקש התפריט כדי להציג את הקטגוריות</string>
+    <string name="help_title">טיפים לשימוש באפליקציה</string>
+    <string name="tip">טיפים לשימוש באפליקציה</string>
+    <string name="help_1">1. לחצו על מקש התפריט כדי להציג את הקטגוריות כ"תפריט עוגה"</string>
+    <string name="help_2">2. גררו את האצבע לקטגוריה מסוימת כדי לראות את הכתבות המרכזיות</string>
+    <string name="help_3">3. גררו את האצבע לכתבה כלשהיא ואז עזבו כדי לראות את הכתבה</string>
 </resources>

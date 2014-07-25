@@ -727,9 +727,11 @@ public class PieMenu extends View{
 			if (selectedArticle != null) {
 				StartActivity.startArticleActivity(dlg.getContext(), getSelectedArticle());
 			} else {
-				Intent i = new Intent(getContext(), CategoryListActivity.class);
+				if (selectedCategory != null) {
+					Intent i = new Intent(getContext(), CategoryListActivity.class);
 
-				getContext().startActivity(i);
+					getContext().startActivity(i);
+				}
 			}
 			break;
 		}

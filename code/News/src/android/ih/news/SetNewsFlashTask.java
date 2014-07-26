@@ -11,7 +11,7 @@ import android.os.AsyncTask;
 
 public class SetNewsFlashTask extends AsyncTask<String, Integer, String>
 {
-	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm ", Locale.getDefault());
+	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm  dd/MM  ", Locale.getDefault());
 	
 	@Override
 	protected String doInBackground(String... params) {

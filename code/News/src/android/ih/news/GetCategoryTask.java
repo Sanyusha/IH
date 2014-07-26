@@ -18,11 +18,10 @@ public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Articl
     protected List<Article> doInBackground(ArticleAdapter... adapter) {
     	this.articleAdapt = adapter[0];
     	int startingIndexToGet = (articleAdapt.getCount() == 0) ? 0 : articleAdapt.getCount();
-    	int countToGet = (articleAdapt.getCount() == 0) ? 20 : 10;
     	PieMenuItem myCategory = PieMenu.getSelectedCategory();
     	if (myCategory != null) {
     		updateInProgress = true;
-    		return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(myCategory.getCode(), startingIndexToGet, countToGet, false);
+    		return IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getCategoryArticles(myCategory.getCode(), startingIndexToGet, 10, false);
     	}
     	
     	return null;
@@ -32,9 +31,10 @@ public class GetCategoryTask extends AsyncTask<ArticleAdapter, Void, List<Articl
     protected void onPostExecute(List<Article> result) {
     	if(result == null){
     		Log.d("lilach", "result null");
+    	} else {
+    		//articleAdapt.clear();
+    		articleAdapt.addAll(result);
+    		updateInProgress = false;
     	}
-        //articleAdapt.clear();
-        articleAdapt.addAll(result);
-        updateInProgress = false;
     }
 }

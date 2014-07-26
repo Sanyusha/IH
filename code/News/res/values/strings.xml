@@ -16,8 +16,8 @@
     <string name="next_page">החלק ימינה ושמאלה כדי לקרוא את הוראות השימוש באפליקציה</string>
     
     <string name="help_title">טיפים לשימוש באפליקציה</string>
-    <string name="tip">טיפים לשימוש באפליקציה</string>
-    <string name="help_1">1. לחצו על מקש התפריט כדי להציג את הקטגוריות כ"תפריט עוגה"</string>
+    <string name="tip"> </string>
+    <string name="help_1">1. לחצו על הלוגו של "ישראל היום" או על מקש התפריט כדי להציג את הקטגוריות כ"תפריט עוגה"</string>
     <string name="help_2">2. גררו את האצבע לקטגוריה מסוימת כדי לראות את הכתבות המרכזיות</string>
     <string name="help_3">3. גררו את האצבע לכתבה כלשהיא ואז עזבו כדי לראות את הכתבה</string>
 </resources>

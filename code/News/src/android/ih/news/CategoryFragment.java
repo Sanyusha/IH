@@ -36,25 +36,25 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 
 	private List<Article> mArticles = new ArrayList<Article>();
 	View view;
-	
+
 	//private GestureDetector gestureDetector;
-	
+
 	private ArticleAdapter adapter;
 	//**************************** #1 added by lilach- start
 	boolean stillDown;
 	private static Point lastTouch;
 	//**************************** #1 added by lilach- end
-	
+
 	private static final float PIE_DIALOG_ALPHA = (float) 0.85;
-	
+
 	TextView mTextView;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.articles_title);
 		//mArticles = ArticleLab.get(getActivity()).getArticles();
-//		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
+		//		mArticles = IHAPIWrapper.getInstance("http://api.app.israelhayom.co.il/", "nas987nh34", false).getMainPageArticles(10);
 		lastTouch = new Point(); //added by lilach
 		adapter = new ArticleAdapter(mArticles);
 		setListAdapter(adapter);
@@ -66,84 +66,91 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		//PieMenu.getMenu().getRoot().setData(root);
 		//new SetTreeCategoriesTask().execute(PieMenu.getMenu());
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-	    view = inflater.inflate(R.layout.category_list_fragment, container, false);
-	    
-	    ImageView logoImage = (ImageView) view.findViewById(R.id.logo_image);
-	    logoImage.setImageResource(R.drawable.black_logo);
-	    
-	    setTicker();
-	    
-	    TextView tv = (TextView) view.findViewById(R.id.category_titleTextView);
-	    tv.setText(PieMenu.getSelectedCategory().getTitle());
-	    
-	    //logoImage.setOnLongClickListener(this);
-	    
-//	    final GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
-//	        public void onLongPress(MotionEvent e) {
-//	        	//if(e.getAction() == MotionEvent.ACTION_DOWN) {
-//                    String text = "You click at x = " + e.getX() + " and y = " + e.getY();
-//                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-//                //}
-//	        	
-//	            Log.e("longpress", "Longpress detected");
-//	        }
-//	    });
-	    
-	    /*gestureDetector = */new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
-	    
-	    //*************************************** #2 deleted by lilach - start
-//	    // using TouchListener provides us coordinates of press
-//	    view.setOnTouchListener(new View.OnTouchListener() {
-//            public boolean onTouch(View v, MotionEvent event) {
-//            	gestureDetector.onTouchEvent(event);
-//                return true;
-//            }
-//	    });
-	    //*************************************** #2 deleted by lilach - end
-	    
-	    //**************************************** #3 added by lilach- start 
-	    class touchList implements OnTouchListener
-		{
-			@Override
-			public boolean onTouch(View v, MotionEvent event) 
-			{
-				final int action = event.getAction();
-				switch (action & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN: {
-					lastTouch.x = (int) event.getX();
-					lastTouch.y = (int) event.getY();
-					Thread th = new Thread(new waitAndStartDialog());
-					th.start();
-					break;
-				}
-				case MotionEvent.ACTION_UP:
-					stillDown = false;
-				}
-				return true;
-			}
-		}
-		view.setOnTouchListener(new touchList());
-		ListView listView = (ListView)view.findViewById(android.R.id.list);
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+		view = inflater.inflate(R.layout.category_list_fragment, container, false);
+
+		ImageView logoImage = (ImageView) view.findViewById(R.id.logo_image);
+		logoImage.setImageResource(R.drawable.black_logo);
+		logoImage.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				
+			public void onClick(View v) {
 				showPieDialog();
-				
-				return true;
 			}
 		});
+
+		setTicker();
+
+		TextView tv = (TextView) view.findViewById(R.id.category_titleTextView);
+		tv.setText(PieMenu.getSelectedCategory().getTitle());
+
+		//logoImage.setOnLongClickListener(this);
+
+		//	    final GestureDetector gestureDetector = new GestureDetector(view.getContext(), new GestureDetector.SimpleOnGestureListener() {
+		//	        public void onLongPress(MotionEvent e) {
+		//	        	//if(e.getAction() == MotionEvent.ACTION_DOWN) {
+		//                    String text = "You click at x = " + e.getX() + " and y = " + e.getY();
+		//                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+		//                //}
+		//	        	
+		//	            Log.e("longpress", "Longpress detected");
+		//	        }
+		//	    });
+
+		/*gestureDetector = */new GestureDetector(view.getContext(), new UserGestureDetector(view.getContext()));
+
+		//*************************************** #2 deleted by lilach - start
+		//	    // using TouchListener provides us coordinates of press
+		//	    view.setOnTouchListener(new View.OnTouchListener() {
+		//            public boolean onTouch(View v, MotionEvent event) {
+		//            	gestureDetector.onTouchEvent(event);
+		//                return true;
+		//            }
+		//	    });
+		//*************************************** #2 deleted by lilach - end
+
+		//**************************************** #3 added by lilach- start 
+		//	    class touchList implements OnTouchListener
+		//		{
+		//			@Override
+		//			public boolean onTouch(View v, MotionEvent event) 
+		//			{
+		//				final int action = event.getAction();
+		//				switch (action & MotionEvent.ACTION_MASK) {
+		//				case MotionEvent.ACTION_DOWN: {
+		//					lastTouch.x = (int) event.getX();
+		//					lastTouch.y = (int) event.getY();
+		//					Thread th = new Thread(new waitAndStartDialog());
+		//					th.start();
+		//					break;
+		//				}
+		//				case MotionEvent.ACTION_UP:
+		//					stillDown = false;
+		//				}
+		//				return true;
+		//			}
+		//		}
+		//		view.setOnTouchListener(new touchList());
+		//		ListView listView = (ListView)view.findViewById(android.R.id.list);
+		//listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+		//			@Override
+		//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+		//					int arg2, long arg3) {
+		//				
+		//				showPieDialog();
+		//				
+		//				return true;
+		//			}
+		//		});
 		//****************************************** #3 added by lilach -end 
-		
-	    return view;
+
+		return view;
 	}
-	
+
 	public void onListItemClick(ListView l, View v, int position, long id){
 		Article a;
 
@@ -152,17 +159,17 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		StartActivity.startArticleActivity(getActivity(), a.getId());
 	}
 
-	
-	
+
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-	    getListView().setOnScrollListener(this);
+		getListView().setOnScrollListener(this);
 	}
 
 	private void setTicker() {
 		mTextView = (TextView) view.findViewById(R.id.scrollingTicker);
-		
+
 		AsyncTask<String, Integer, String> setTask = new SetNewsFlashTask().execute();
 		String scrollingText = "";
 		try {
@@ -174,37 +181,37 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		mTextView.setText(scrollingText);
 	}
-//	@Override
-//	public void onListItemClick(ListView l, View v, int position, long id){
-//		Article a = ((ArticleAdapter)getListAdapter()).getItem(position);
-//		Log.d(TAG, a.getTitle() + " was clicked" );
-//		
-//		Intent i = new Intent(getActivity(), ArticlePagerActivity.class);
-//		i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
-//		startActivity(i);
-//		
-//	}
-	
+	//	@Override
+	//	public void onListItemClick(ListView l, View v, int position, long id){
+	//		Article a = ((ArticleAdapter)getListAdapter()).getItem(position);
+	//		Log.d(TAG, a.getTitle() + " was clicked" );
+	//		
+	//		Intent i = new Intent(getActivity(), ArticlePagerActivity.class);
+	//		i.putExtra(ArticleFragment.EXTRA_ARTICLE_ID, a.getId());
+	//		startActivity(i);
+	//		
+	//	}
+
 	public class ArticleAdapter extends ArrayAdapter<Article>{
-//		public enum RowType {
-//	        // Here we have two items types, you can have as many as you like though
-//	        LIST_ITEM, HEADER_ITEM
-//	    }
-		
+		//		public enum RowType {
+		//	        // Here we have two items types, you can have as many as you like though
+		//	        LIST_ITEM, HEADER_ITEM
+		//	    }
+
 		public ArticleAdapter(List<android.ih.news.model.Article> mArticles){
 			super(getActivity(), 0 , mArticles);
 		}
-		
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent){
 			/*
 			Log.d("adapter", "positionOUT:::" + position);
-			
+
 			View view;
-			
+
 			if(convertView == null){
 				Log.d("adapter", "position:::" + position);
 				if (position == 0) {
@@ -212,44 +219,44 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 				} else {
 					convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_article, null);
 				}
-				
+
 			}
-			
+
 			Article article = getItem(position);
-			
+
 //			Button supposedToBePicture = (Button)convertView.findViewById(R.id.supposed_to_be_picture);
 //			supposedToBePicture.setText("picture");
 
 			ImageView articleImageView;
 			articleImageView = (ImageView)convertView.findViewById(R.id.list_item_imageView);
-			
+
 			articleImageView.setTag(article.getImgLink());
 			new DownloadImagesTask().execute(articleImageView);
-			
+
 			//articleImageView.setImageResource(R.drawable.images_logo2_he);
-			
+
 			TextView titleTextView = (TextView)convertView.findViewById(R.id.article_list_item_titleTextView);
 			titleTextView.setText(article.getTitle());
-			
+
 			TextView summaryTextView = (TextView)convertView.findViewById(R.id.article_list_item_summaryTextView);
 			summaryTextView.setText(article.getSummary());
-			
-						
+
+
 			return convertView;
-			*/
-			
+			 */
+
 			// Use getView from the Item interface
-	        return mArticles.get(position).getView(getActivity().getLayoutInflater(), convertView);
+			return mArticles.get(position).getView(getActivity().getLayoutInflater(), convertView);
 		}
-		
+
 		@Override
-	    public int getViewTypeCount() {
-	        // Get the number of items in the enum
-	        return 2;
-	 
-	    }
-	 
-	    /*@Override
+		public int getViewTypeCount() {
+			// Get the number of items in the enum
+			return 2;
+
+		}
+
+		/*@Override
 	    public int getItemViewType(int position) {
 	        // Use getViewType from the Item interface
 	        return mArticles.get(position).getViewType();
@@ -264,15 +271,15 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
             String text = "You click at x = " + event.getX() + " and y = " + event.getY();
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
         }
- 
+
         return super.onTouchEvent(event);
     }*/
-	
+
 	public boolean onLongClick(View arg0) {
 		Toast.makeText(getActivity(), "On long click listener", Toast.LENGTH_LONG).show();
 		return false;
 	}
-	
+
 	//******************************************* #4 added by lilach
 	private class waitAndStartDialog implements Runnable
 	{
@@ -298,7 +305,7 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		}
 	}
 	//*********************************************** #4 added by lilach- end
-	
+
 	public void showPieDialog() {
 		final Dialog dialog = new Dialog(getActivity(), R.style.full_screen_dialog);
 		WindowManager.LayoutParams WMLP = dialog.getWindow().getAttributes();
@@ -315,24 +322,24 @@ public class CategoryFragment extends ListFragment implements OnLongClickListene
 		//dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
 		//		ViewGroup.LayoutParams.MATCH_PARENT);
 		dialog.setContentView(R.layout.pie_dlg);
-		
+
 		PieMenu pm = (PieMenu) dialog.findViewById(R.id.pieMenu);
 		pm.setDlg(dialog);
-//		
-//		pm.setOnLongClickListener(new OnLongClickListener() {
-//			public boolean onLongClick(View v) {
-//				Toast.makeText(dialog.getContext(), "Long click on pie", Toast.LENGTH_SHORT).show();
-//				return false;
-//			}
-//		});
-		
+		//		
+		//		pm.setOnLongClickListener(new OnLongClickListener() {
+		//			public boolean onLongClick(View v) {
+		//				Toast.makeText(dialog.getContext(), "Long click on pie", Toast.LENGTH_SHORT).show();
+		//				return false;
+		//			}
+		//		});
+
 		dialog.show();
 	}
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

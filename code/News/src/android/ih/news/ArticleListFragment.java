@@ -86,44 +86,52 @@ public class ArticleListFragment extends ListFragment implements OnLongClickList
 		ImageView logoImage = (ImageView) view.findViewById(R.id.logo_image);
 		logoImage.setImageResource(R.drawable.black_logo);
 
-		setTicker();
-
-		//**************************************** #3 added by lilach- start 
-		class touchList implements OnTouchListener
-		{
+		logoImage.setOnClickListener(new View.OnClickListener() {
+			
 			@Override
-			public boolean onTouch(View v, MotionEvent event) 
-			{
-				if (pieDialog != null)
-				{
-					pieDialog.onTouchEvent(event);
-				}
-				final int action = event.getAction();
-				switch (action & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN: {
-					lastTouch.x = (int) event.getX();
-					lastTouch.y = (int) event.getY();
-					Thread th = new Thread(new waitAndStartDialog());
-					th.start();
-					break;
-				}
-				case MotionEvent.ACTION_UP:
-					stillDown = false;
-				}
-				return true;
-			}
-		}
-		view.setOnTouchListener(new touchList());
-		ListView listView = (ListView)view.findViewById(android.R.id.list);
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
+			public void onClick(View v) {
 				showPieDialog();
-				return true;
 			}
 		});
+		
+		setTicker();
+
+//		//**************************************** #3 added by lilach- start 
+//		class touchList implements OnTouchListener
+//		{
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) 
+//			{
+//				if (pieDialog != null)
+//				{
+//					pieDialog.onTouchEvent(event);
+//				}
+//				final int action = event.getAction();
+//				switch (action & MotionEvent.ACTION_MASK) {
+//				case MotionEvent.ACTION_DOWN: {
+//					lastTouch.x = (int) event.getX();
+//					lastTouch.y = (int) event.getY();
+//					Thread th = new Thread(new waitAndStartDialog());
+//					th.start();
+//					break;
+//				}
+//				case MotionEvent.ACTION_UP:
+//					stillDown = false;
+//				}
+//				return true;
+//			}
+//		}
+		//view.setOnTouchListener(new touchList());
+		//ListView listView = (ListView)view.findViewById(android.R.id.list);
+//		//listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+//					int arg2, long arg3) {
+//				showPieDialog();
+//				return true;
+//			}
+//		});
 		//****************************************** #3 added by lilach -end 
 
 		return view;

@@ -48,6 +48,13 @@ public class ArticleFragment extends Fragment {
 		
 		logoImage = (ImageView) v.findViewById(R.id.logo_image);
 	    logoImage.setImageResource(R.drawable.black_logo);
+	    logoImage.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showPieDialog();
+			}
+		});
 	    
 		myWebView = (WebView) v.findViewById(R.id.webview);
 		String htmlData = null;

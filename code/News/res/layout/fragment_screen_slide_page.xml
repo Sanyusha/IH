@@ -12,10 +12,10 @@
         android:alpha="0.25" />
     
 	<LinearLayout
-	    android:orientation="vertical"
 	    android:id="@+id/layout1"
-    	android:layout_width="match_parent"
-    	android:layout_height="match_parent">
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" >
 	
 	    <TextView
         android:id="@+id/textTip"
@@ -58,19 +58,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="1dp"
         android:gravity="right"
         android:layout_gravity="right"
         android:text="@string/runApp" />
  	
-    <!--  CheckBox
-        android:id="@+id/checkBox1"
+    <CheckBox
+        android:id="@+id/dontShowAgain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:gravity="right"
         android:layout_gravity="right"
-        android:text="@string/showAgain" /-->
+        android:text="@string/showAgain"/>
     </LinearLayout>
 </FrameLayout>

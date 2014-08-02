@@ -1,6 +1,8 @@
 package android.ih.help;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.ih.news.ArticleListActivity;
 import android.ih.news.R;
 import android.os.Bundle;
@@ -10,12 +12,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ScreenSlidePageFragment extends Fragment {
 	
-	private int m_num;
+	public static final String PREF_DONT_SHOW_HELPER = "dontShowHelper";
+	public static final String CHOICE_PREF = "checkPref";
 	
 	public static ScreenSlidePageFragment newInstance(int position) {
 		ScreenSlidePageFragment pageFragment = new ScreenSlidePageFragment();
@@ -66,6 +71,21 @@ public class ScreenSlidePageFragment extends Fragment {
 			}
 		});
         
+        CheckBox dontShowAgain = (CheckBox) rootView.findViewById(R.id.dontShowAgain);
+        dontShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if(isChecked){
+					SharedPreferences prefs = getActivity().getSharedPreferences(CHOICE_PREF, Context.MODE_PRIVATE);
+					prefs.edit().putBoolean(PREF_DONT_SHOW_HELPER, true).commit();
+					//Intent i = new Intent(getActivity(), SplashScreen.class);
+					//i.putExtra(SplashScreen.DONT_SHOW_HELPER_SCREEN_INDEX, true);
+					
+				}
+			}
+		});
+
         return rootView;
     }
 }
